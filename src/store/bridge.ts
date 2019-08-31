@@ -11,6 +11,10 @@ export interface BridgeConfig {
   };
 }
 
+type Effect = "none" | "colorloop";
+type Alert = "none" | "select" | "lselect";
+type Colormode = "hs" | "xy" | "ct";
+
 export interface Lights {
   [id: string]: {
     state: {
@@ -18,11 +22,11 @@ export interface Lights {
       bri: number;
       hue: number;
       sat: number;
-      effect: "none" | "colorloop";
+      effect: Effect;
       xy: [number, number];
       ct: number;
-      alert: "none" | "select" | "lselect";
-      colormode: "xy";
+      alert: Alert;
+      colormode: Colormode;
       mode: "homeautomation";
       reachable: boolean;
     };
@@ -53,6 +57,69 @@ export interface Lights {
     swversion: string;
     swconfigid: string;
     productid: string;
+  };
+}
+
+export interface Groups {
+  [id: string]: {
+    name: string;
+    lights: string[];
+    sensors: [];
+    type: "Room" | "Zone";
+    state: { all_on: boolean; any_on: boolean };
+    recycle: boolean;
+    class:
+      | "Living room"
+      | "Kitchen"
+      | "Dining"
+      | "Bedroom"
+      | "Kids bedroom"
+      | "Bathroom"
+      | "Nursery"
+      | "Recreation"
+      | "Office"
+      | "Gym"
+      | "Hallway"
+      | "Toilet"
+      | "Front door"
+      | "Garage"
+      | "Terrace"
+      | "Garden"
+      | "Driveway"
+      | "Carport"
+      | "Other"
+      | "Home"
+      | "Downstairs"
+      | "Upstairs"
+      | "Top floor"
+      | "Attic"
+      | "Guest room"
+      | "Staircase"
+      | "Lounge"
+      | "Man cave"
+      | "Computer"
+      | "Studio"
+      | "Music"
+      | "TV"
+      | "Reading"
+      | "Closet"
+      | "Storage"
+      | "Laundry room"
+      | "Balcony"
+      | "Porch"
+      | "Barbecue"
+      | "Pool";
+    action: {
+      on: boolean;
+      bri: number;
+      hue: number;
+      sat: number;
+      effect: Effect;
+      xy: [number, number];
+      ct: number;
+      alert: Alert;
+      colormode: Colormode;
+    };
   };
 }
 
@@ -148,6 +215,49 @@ export class Bridge {
       `http://${this.internalipaddress}/api/${this.username}/lights`,
       {
         mode: "cors"
+      }
+    );
+    return await response.json();
+  }
+
+  @action
+  public async setLightState(
+    id: string,
+    state: { on: boolean }
+  ): Promise<void> {
+    const response = await fetch(
+      `http://${this.internalipaddress}/api/${this.username}/lights/${id}/state`,
+      {
+        mode: "cors",
+        method: "PUT",
+        body: JSON.stringify(state)
+      }
+    );
+    return await response.json();
+  }
+
+  @action
+  public async loadGroups(): Promise<Groups> {
+    const response = await fetch(
+      `http://${this.internalipaddress}/api/${this.username}/groups`,
+      {
+        mode: "cors"
+      }
+    );
+    return await response.json();
+  }
+
+  @action
+  public async setGroupState(
+    id: string,
+    state: { on: boolean }
+  ): Promise<void> {
+    const response = await fetch(
+      `http://${this.internalipaddress}/api/${this.username}/groups/${id}/action`,
+      {
+        mode: "cors",
+        method: "PUT",
+        body: JSON.stringify(state)
       }
     );
     return await response.json();

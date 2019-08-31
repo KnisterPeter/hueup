@@ -1,7 +1,7 @@
 import { action, autorun, computed, observable, reaction } from "mobx";
+import * as storage from "../storage";
+import { createStore } from "../store-helper";
 import { Bridge } from "./bridge";
-import * as storage from "./storage";
-import { createStore } from "./store-helper";
 
 const id = (bridge: Bridge) => {
   return bridge.id;
@@ -9,7 +9,7 @@ const id = (bridge: Bridge) => {
 
 export class BridgesStore {
   @observable
-  public _selected?: string;
+  private _selected?: string;
 
   @computed
   private get selectedData(): Bridge | undefined {
@@ -34,6 +34,11 @@ export class BridgesStore {
   @computed
   public get available(): Bridge[] {
     return this._bridges;
+  }
+
+  @computed
+  public get authenticated(): boolean {
+    return this.selected !== undefined && this.selected.username !== undefined;
   }
 
   constructor() {
@@ -75,8 +80,8 @@ export class BridgesStore {
   }
 
   @action
-  public select(bridge: Bridge): void {
-    this._selected = bridge.id;
+  public select(bridge?: Bridge): void {
+    this._selected = bridge ? bridge.id : undefined;
   }
 }
 
