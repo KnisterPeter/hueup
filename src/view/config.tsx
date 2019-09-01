@@ -4,7 +4,7 @@ import { Bridge, BridgeConfig } from "../store/bridge";
 import { useBridgeFunction } from "./_hooks";
 
 export const ConfigView: FC<{ bridge: Bridge }> = ({ bridge }) => {
-  const [store, refresh] = useBridgeFunction(bridge, bridge.loadConfig);
+  const [store] = useBridgeFunction(bridge, bridge.loadConfig);
 
   return useObserver(() =>
     store.loading ? (
