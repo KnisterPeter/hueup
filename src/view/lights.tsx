@@ -3,7 +3,7 @@ import React, { FC, useCallback } from "react";
 import { Bridge, Lights } from "../store/bridge";
 import { useBridgeFunction } from "./_hooks";
 
-export const LightsView: FC<{ bridge: Bridge }> = ({ bridge }) => {
+export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
   const [store, refresh] = useBridgeFunction(bridge, bridge.loadLights);
 
   return useObserver(() =>

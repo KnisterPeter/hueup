@@ -42,7 +42,7 @@ const config = {
     filename: "app.js"
   },
   plugins: [
-    dev &&
+    !dev &&
       new BundleAnalyzerPlugin({ analyzerMode: "static", openAnalyzer: false }),
     new HtmlWebpackPlugin({
       title: "hue up",

@@ -3,7 +3,7 @@ import React, { FC, useCallback } from "react";
 import { Bridge, BridgeConfig } from "../store/bridge";
 import { useBridgeFunction } from "./_hooks";
 
-export const ConfigView: FC<{ bridge: Bridge }> = ({ bridge }) => {
+export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
   const [store] = useBridgeFunction(bridge, bridge.loadConfig);
 
   return useObserver(() =>

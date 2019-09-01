@@ -8,34 +8,35 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 import { useObserver } from "mobx-react";
 import React, { FC, useCallback } from "react";
-import styled from "styled-components";
-import { Bridge } from "../store/bridge";
 import { useBridges } from "../store/bridges";
 import { useNavigation } from "../store/navigation";
-import { ConfigView } from "../view/config";
-import { GroupsView } from "../view/groups";
-import { LightsView } from "../view/lights";
-
-const DrawerList = styled.div`
-  min-width: 200px;
-`;
 
 export const Drawer: FC = () => {
   const bridges = useBridges();
   const navigation = useNavigation();
 
-  const createCallback = (view: FC<{ bridge: Bridge }>) => () => {
-    navigation.view = view;
-    navigation.drawerOpen = false;
-  };
-
   const onChangeBridge = useCallback(() => {
     bridges.select(undefined);
     navigation.drawerOpen = false;
   }, []);
-  const onShowGroups = useCallback(createCallback(GroupsView), []);
-  const onShowLigths = useCallback(createCallback(LightsView), []);
-  const onShowConfig = useCallback(createCallback(ConfigView), []);
+  const onShowGroups = useCallback(() => {
+    import("../view/groups").then(({ View }) => {
+      navigation.view = View;
+      navigation.drawerOpen = false;
+    });
+  }, []);
+  const onShowLigths = useCallback(() => {
+    import("../view/lights").then(({ View }) => {
+      navigation.view = View;
+      navigation.drawerOpen = false;
+    });
+  }, []);
+  const onShowConfig = useCallback(() => {
+    import("../view/config").then(({ View }) => {
+      navigation.view = View;
+      navigation.drawerOpen = false;
+    });
+  }, []);
 
   const openDrawer = useCallback(() => (navigation.drawerOpen = true), []);
   const closeDrawer = useCallback(() => (navigation.drawerOpen = false), []);
@@ -47,7 +48,7 @@ export const Drawer: FC = () => {
       onOpen={openDrawer}
       onClose={closeDrawer}
     >
-      <DrawerList>
+      <div style={{ minWidth: "200px" }}>
         <List>
           {bridges.authenticated && (
             <>
@@ -78,7 +79,7 @@ export const Drawer: FC = () => {
             </>
           )}
         </List>
-      </DrawerList>
+      </div>
     </SwipeableDrawer>
   ));
 };

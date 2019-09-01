@@ -3,7 +3,7 @@ import React, { FC, useCallback } from "react";
 import { Bridge, Groups } from "../store/bridge";
 import { useBridgeFunction } from "./_hooks";
 
-export const GroupsView: FC<{ bridge: Bridge }> = ({ bridge }) => {
+export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
   const [store, refresh] = useBridgeFunction(bridge, bridge.loadGroups);
 
   return useObserver(() =>
