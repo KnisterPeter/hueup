@@ -123,6 +123,14 @@ export interface Groups {
   };
 }
 
+export enum AuthorizationStatus {
+  tryAgain,
+  noResponse,
+  pressButtonOnBridge,
+  unknownError,
+  unknownResponse
+}
+
 export class Bridge {
   @observable
   private data: Bridge;
@@ -160,37 +168,54 @@ export class Bridge {
   }
 
   @action
-  public async authorize(): Promise<void> {
-    const response = await fetch(`http://${this.internalipaddress}/api`, {
-      mode: "cors",
-      method: "POST",
-      body: JSON.stringify({
-        devicetype: "hueup#devicename",
-        generateclientkey: true
-      })
-    });
+  public async authorize(
+    status: (status: AuthorizationStatus) => void
+  ): Promise<void> {
+    const wait = async () => new Promise(resolve => setTimeout(resolve, 1500));
 
-    const data: {
-      success?: { username: string; clientkey?: string };
-      error?: { type: number };
-    }[] = await response.json();
+    let until = Date.now() + 1000 * 30;
 
-    if (data.length === 0) {
-      console.log("no response");
-      return;
-    }
-    if (data[0].error) {
-      if (data[0].error.type === 101) {
-        console.log("press button on bridge");
+    while (until > Date.now()) {
+      console.log("until", until, Date.now());
+
+      const response = await fetch(`http://${this.internalipaddress}/api`, {
+        mode: "cors",
+        method: "POST",
+        body: JSON.stringify({
+          devicetype: "hueup#devicename",
+          generateclientkey: true
+        })
+      });
+
+      const data: {
+        success?: { username: string; clientkey?: string };
+        error?: { type: number };
+      }[] = await response.json();
+
+      if (data.length === 0) {
+        status(AuthorizationStatus.noResponse);
+        return;
       } else {
-        console.log("error");
+        if (data[0].error) {
+          if (data[0].error.type === 101) {
+            status(AuthorizationStatus.pressButtonOnBridge);
+            await wait();
+          } else {
+            status(AuthorizationStatus.unknownError);
+            return;
+          }
+        } else if (data[0].success) {
+          this.username = data[0].success.username;
+          this.clientkey = data[0].success.clientkey;
+          return;
+        } else {
+          console.log(data);
+          status(AuthorizationStatus.unknownResponse);
+          return;
+        }
       }
-    } else if (data[0].success) {
-      this.username = data[0].success.username;
-      this.clientkey = data[0].success.clientkey;
-    } else {
-      console.log(data);
     }
+    status(AuthorizationStatus.tryAgain);
   }
 
   @action

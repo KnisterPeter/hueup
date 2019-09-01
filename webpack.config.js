@@ -6,8 +6,8 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
 const WorkboxPlugin = require("workbox-webpack-plugin");
 const WebpackPwaManifest = require("webpack-pwa-manifest");
 
-const useReact = process.env.REACT !== undefined;
 const dev = process.env.NODE_ENV !== "production";
+const useReact = process.env.REACT !== undefined;
 
 /**
  * @type {webpack.Configuration}
