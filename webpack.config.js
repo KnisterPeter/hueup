@@ -3,6 +3,8 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
+const WorkboxPlugin = require("workbox-webpack-plugin");
+const WebpackPwaManifest = require("webpack-pwa-manifest");
 
 const dev = process.env.NODE_ENV === "production";
 
@@ -51,6 +53,18 @@ const config = {
     new HtmlWebpackPlugin({
       title: "hue up",
       template: "./src/index.html"
+    }),
+    new WebpackPwaManifest({
+      name: "hue up",
+      short_name: "hue up",
+      description: "Conigure your Hue network",
+      crossorigin: "anonymous",
+      display: "standalone"
+    }),
+    new WorkboxPlugin.GenerateSW({
+      importWorkboxFrom: "local",
+      clientsClaim: true,
+      skipWaiting: true
     })
   ].filter(Boolean)
 };
