@@ -1,3 +1,12 @@
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
+  Switch
+} from "@material-ui/core";
+import FilterNoneRoundedIcon from "@material-ui/icons/FilterNoneRounded";
 import { useObserver } from "mobx-react";
 import React, { useCallback } from "react";
 import { useBridgeFunction } from "../hooks/bridge-function";
@@ -19,7 +28,7 @@ export default function View() {
     store.loading ? (
       <div>loading...</div>
     ) : (
-      <ul>
+      <List>
         {Object.keys(store.value).map(id => (
           <Group
             key={id}
@@ -29,7 +38,7 @@ export default function View() {
             refresh={refresh}
           />
         ))}
-      </ul>
+      </List>
     )
   );
 }
@@ -50,12 +59,14 @@ function Group({
   }, []);
 
   return useObserver(() => (
-    <li>
-      {group.name}
-      <br />
-      On={group.state.all_on ? "true" : "false"}
-      <br />
-      <button onClick={onClick}>On/Off</button>
-    </li>
+    <ListItem>
+      <ListItemIcon>
+        <FilterNoneRoundedIcon />
+      </ListItemIcon>
+      <ListItemText primary={group.name} />
+      <ListItemSecondaryAction>
+        <Switch edge="end" onChange={onClick} checked={group.state.all_on} />
+      </ListItemSecondaryAction>
+    </ListItem>
   ));
 }

@@ -46,7 +46,7 @@ const config = {
         exclude: /node_modules/
       },
       {
-        test: /\.woff2?$/,
+        test: /\.(woff2?|png)$/,
         use: "file-loader"
       }
     ]
@@ -63,7 +63,14 @@ const config = {
       short_name: "hue up",
       description: "Conigure your Hue network",
       crossorigin: "anonymous",
-      display: "standalone"
+      display: "standalone",
+      icons: [
+        {
+          src: "./src/logo.png",
+          sizes: "200x200",
+          type: "image/png"
+        }
+      ]
     }),
     new WorkboxPlugin.GenerateSW({
       importWorkboxFrom: "local",

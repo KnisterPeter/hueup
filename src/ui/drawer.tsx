@@ -8,6 +8,7 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 import { useObserver } from "mobx-react";
 import React, { useCallback } from "react";
+import logo from "../logo.png";
 import { useBridges } from "../store/bridges";
 import { Routes as R, useNavigation } from "../store/navigation";
 
@@ -35,6 +36,7 @@ export function Drawer() {
       onClose={closeDrawer}
     >
       <div style={{ minWidth: "200px" }}>
+        <img src={logo} style={{ margin: 10, width: 180, height: 180 }} />
         <List>
           {bridges.authenticated && (
             <>

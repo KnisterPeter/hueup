@@ -1,3 +1,12 @@
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
+  Switch
+} from "@material-ui/core";
+import WbIncandescentRoundedIcon from "@material-ui/icons/WbIncandescentRounded";
 import { useObserver } from "mobx-react";
 import React, { useCallback } from "react";
 import { useBridgeFunction } from "../hooks/bridge-function";
@@ -19,7 +28,7 @@ export default function View() {
     store.loading ? (
       <div>loading...</div>
     ) : (
-      <ul>
+      <List>
         {Object.keys(store.value).map(id => (
           <Light
             key={id}
@@ -29,7 +38,7 @@ export default function View() {
             refresh={refresh}
           />
         ))}
-      </ul>
+      </List>
     )
   );
 }
@@ -50,12 +59,14 @@ function Light({
   }, []);
 
   return useObserver(() => (
-    <li>
-      {light.name}
-      <br />
-      On={light.state.on ? "true" : "false"}
-      <br />
-      <button onClick={onClick}>On/Off</button>
-    </li>
+    <ListItem>
+      <ListItemIcon>
+        <WbIncandescentRoundedIcon />
+      </ListItemIcon>
+      <ListItemText primary={light.name} />
+      <ListItemSecondaryAction>
+        <Switch edge="end" onChange={onClick} checked={light.state.on} />
+      </ListItemSecondaryAction>
+    </ListItem>
   ));
 }
