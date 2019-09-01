@@ -6,7 +6,7 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
 const WorkboxPlugin = require("workbox-webpack-plugin");
 const WebpackPwaManifest = require("webpack-pwa-manifest");
 
-const dev = process.env.NODE_ENV === "production";
+const dev = process.env.NODE_ENV !== "production";
 
 /**
  * @type {webpack.Configuration}
