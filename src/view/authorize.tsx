@@ -1,11 +1,11 @@
 import { Button, Container, Typography } from "@material-ui/core";
 import { useObserver } from "mobx-react-lite";
 import React, { useCallback } from "react";
-import { useBridges } from "./store/bridges";
-import { Routes, useNavigation } from "./store/navigation";
-import { useTitle } from "./_hooks";
+import { useTitle } from "../hooks/title";
+import { useBridges } from "../store/bridges";
+import { Routes, useNavigation } from "../store/navigation";
 
-export function Authorize() {
+export default function Authorize() {
   useTitle("Authorize bridge");
 
   const bridges = useBridges();

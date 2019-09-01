@@ -1,7 +1,7 @@
 import { computed, observable, runInAction } from "mobx";
 import { FC } from "react";
-import { createStore } from "../store-helper";
 import { Bridge } from "./bridge";
+import { createStore } from "./_helper";
 
 export const enum Routes {
   "/" = "/",

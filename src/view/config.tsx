@@ -1,8 +1,9 @@
 import { useObserver } from "mobx-react";
 import React, { useCallback } from "react";
+import { useBridgeFunction } from "../hooks/bridge-function";
+import { useTitle } from "../hooks/title";
 import { Bridge, BridgeConfig } from "../store/bridge";
 import { useSelectedBridge } from "../store/bridges";
-import { useBridgeFunction, useTitle } from "../_hooks";
 
 export default function View() {
   useTitle("Users");

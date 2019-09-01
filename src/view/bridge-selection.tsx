@@ -9,11 +9,11 @@ import {
 import InboxIcon from "@material-ui/icons/Inbox";
 import { useObserver } from "mobx-react";
 import React, { useCallback } from "react";
-import { Bridge } from "./store/bridge";
-import { useBridges } from "./store/bridges";
-import { useTitle } from "./_hooks";
+import { useTitle } from "../hooks/title";
+import { Bridge } from "../store/bridge";
+import { useBridges } from "../store/bridges";
 
-export function BridgeSelection() {
+export default function BridgeSelection() {
   useTitle("Select your bridge");
 
   const bridges = useBridges();

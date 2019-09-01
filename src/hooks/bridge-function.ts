@@ -1,7 +1,6 @@
 import { useLocalStore } from "mobx-react";
 import { useEffect, useState } from "react";
-import { Bridge } from "./store/bridge";
-import { useNavigation } from "./store/navigation";
+import { Bridge } from "../store/bridge";
 
 export type BridgeFunctionStore<T> =
   | BridgeFunctionStoreReady<T>
@@ -41,13 +40,4 @@ export const useBridgeFunction = <T>(
   }, [bridge, state]);
 
   return [store, refresh];
-};
-
-export const useTitle = (title: string) => {
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    navigation.title = title;
-    return () => (navigation.title = undefined);
-  }, []);
 };

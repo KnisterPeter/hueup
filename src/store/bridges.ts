@@ -1,8 +1,8 @@
 import { action, autorun, computed, observable, reaction } from "mobx";
 import * as storage from "../storage";
-import { createStore } from "../store-helper";
 import { Bridge } from "./bridge";
 import { NavigationStore, Routes, useNavigation } from "./navigation";
+import { createStore } from "./_helper";
 
 const id = (bridge: Bridge) => {
   return bridge.id;
