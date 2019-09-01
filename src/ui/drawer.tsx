@@ -10,6 +10,7 @@ import { useObserver } from "mobx-react";
 import React, { FC, useCallback } from "react";
 import { useBridges } from "../store/bridges";
 import { useNavigation } from "../store/navigation";
+import { useView } from "../_hooks";
 
 export const Drawer: FC = () => {
   const bridges = useBridges();
@@ -19,24 +20,10 @@ export const Drawer: FC = () => {
     bridges.select(undefined);
     navigation.drawerOpen = false;
   }, []);
-  const onShowGroups = useCallback(() => {
-    import("../view/groups").then(({ View }) => {
-      navigation.view = View;
-      navigation.drawerOpen = false;
-    });
-  }, []);
-  const onShowLigths = useCallback(() => {
-    import("../view/lights").then(({ View }) => {
-      navigation.view = View;
-      navigation.drawerOpen = false;
-    });
-  }, []);
-  const onShowConfig = useCallback(() => {
-    import("../view/config").then(({ View }) => {
-      navigation.view = View;
-      navigation.drawerOpen = false;
-    });
-  }, []);
+
+  const onShowGroups = useView(() => import("../view/groups"));
+  const onShowLigths = useView(() => import("../view/lights"));
+  const onShowConfig = useView(() => import("../view/config"));
 
   const openDrawer = useCallback(() => (navigation.drawerOpen = true), []);
   const closeDrawer = useCallback(() => (navigation.drawerOpen = false), []);

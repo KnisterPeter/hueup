@@ -1,9 +1,11 @@
 import { useObserver } from "mobx-react";
 import React, { FC, useCallback } from "react";
 import { Bridge, BridgeConfig } from "../store/bridge";
-import { useBridgeFunction } from "./_hooks";
+import { useBridgeFunction, useTitle } from "../_hooks";
 
 export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
+  useTitle("Users");
+
   const [store] = useBridgeFunction(bridge, bridge.loadConfig);
 
   return useObserver(() =>
@@ -12,19 +14,16 @@ export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
     ) : (
       <>
         <h2>{store.value.name}</h2>
-        <div>
-          Users:
-          <ul>
-            {Object.keys(store.value.whitelist).map(username => (
-              <User
-                key={username}
-                bridge={bridge}
-                username={username}
-                user={store.value!.whitelist[username]}
-              />
-            ))}
-          </ul>
-        </div>
+        <ul>
+          {Object.keys(store.value.whitelist).map(username => (
+            <User
+              key={username}
+              bridge={bridge}
+              username={username}
+              user={store.value!.whitelist[username]}
+            />
+          ))}
+        </ul>
       </>
     )
   );

@@ -1,29 +1,28 @@
 import { useObserver } from "mobx-react";
 import React, { FC, useCallback } from "react";
 import { Bridge, Groups } from "../store/bridge";
-import { useBridgeFunction } from "./_hooks";
+import { useBridgeFunction, useTitle } from "../_hooks";
 
 export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
+  useTitle("Rooms and Zones");
+
   const [store, refresh] = useBridgeFunction(bridge, bridge.loadGroups);
 
   return useObserver(() =>
     store.loading ? (
       <div>loading...</div>
     ) : (
-      <div>
-        Rooms and Zones
-        <ul>
-          {Object.keys(store.value).map(id => (
-            <Group
-              key={id}
-              bridge={bridge}
-              id={id}
-              group={store.value[id]}
-              refresh={refresh}
-            />
-          ))}
-        </ul>
-      </div>
+      <ul>
+        {Object.keys(store.value).map(id => (
+          <Group
+            key={id}
+            bridge={bridge}
+            id={id}
+            group={store.value[id]}
+            refresh={refresh}
+          />
+        ))}
+      </ul>
     )
   );
 };

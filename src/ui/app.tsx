@@ -26,7 +26,7 @@ export const App: FC<PropsWithChildren<{}>> = ({ children }) => {
           <IconButton edge="start" color="inherit" onClick={toggleDrawer}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6">Hue up</Typography>
+          <Typography variant="h6">{navigation.title}</Typography>
         </Toolbar>
       </AppBar>
       <Drawer />

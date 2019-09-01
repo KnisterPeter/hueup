@@ -1,29 +1,28 @@
 import { useObserver } from "mobx-react";
 import React, { FC, useCallback } from "react";
 import { Bridge, Lights } from "../store/bridge";
-import { useBridgeFunction } from "./_hooks";
+import { useBridgeFunction, useTitle } from "../_hooks";
 
 export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
+  useTitle("Lights");
+
   const [store, refresh] = useBridgeFunction(bridge, bridge.loadLights);
 
   return useObserver(() =>
     store.loading ? (
       <div>loading...</div>
     ) : (
-      <div>
-        Lights
-        <ul>
-          {Object.keys(store.value).map(id => (
-            <Light
-              key={id}
-              bridge={bridge}
-              id={id}
-              light={store.value[id]}
-              refresh={refresh}
-            />
-          ))}
-        </ul>
-      </div>
+      <ul>
+        {Object.keys(store.value).map(id => (
+          <Light
+            key={id}
+            bridge={bridge}
+            id={id}
+            light={store.value[id]}
+            refresh={refresh}
+          />
+        ))}
+      </ul>
     )
   );
 };
