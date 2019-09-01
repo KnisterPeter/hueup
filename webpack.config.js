@@ -35,7 +35,11 @@ const config = {
     ]
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"]
+    extensions: [".tsx", ".ts", ".js"],
+    alias: {
+      react: "preact/compat",
+      "react-dom": "preact/compat"
+    }
   },
   output: {
     path: path.resolve(__dirname, "dist"),
