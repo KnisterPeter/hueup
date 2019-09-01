@@ -2,6 +2,7 @@ import { action, autorun, computed, observable, reaction } from "mobx";
 import * as storage from "../storage";
 import { createStore } from "../store-helper";
 import { Bridge } from "./bridge";
+import { NavigationStore, Routes, useNavigation } from "./navigation";
 
 const id = (bridge: Bridge) => {
   return bridge.id;
@@ -41,9 +42,21 @@ export class BridgesStore {
     return this.selected !== undefined && this.selected.username !== undefined;
   }
 
-  constructor() {
+  constructor(navigation: NavigationStore) {
     this.discover();
     this.setupStorage();
+
+    reaction(
+      () => this._selected,
+      selected => {
+        if (selected) {
+          navigation.to = Routes["/authorize"];
+        } else {
+          navigation.to = Routes["/"];
+        }
+      },
+      { fireImmediately: true }
+    );
   }
 
   @action
@@ -85,5 +98,19 @@ export class BridgesStore {
   }
 }
 
-const { Provider, use } = createStore(() => new BridgesStore());
+export function useSelectedBridge() {
+  const navigation = useNavigation();
+
+  const bridges = use();
+  if (!bridges.selected) {
+    navigation.to = Routes["/"];
+    return null;
+  }
+  return bridges.selected;
+}
+
+const { Provider, use } = createStore(
+  (dependencies: [NavigationStore]) => new BridgesStore(...dependencies),
+  () => [useNavigation()] as [NavigationStore]
+);
 export { Provider as BridgesProvider, use as useBridges };

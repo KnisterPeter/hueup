@@ -1,10 +1,16 @@
 import { useObserver } from "mobx-react";
-import React, { FC, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Bridge, Lights } from "../store/bridge";
+import { useSelectedBridge } from "../store/bridges";
 import { useBridgeFunction, useTitle } from "../_hooks";
 
-export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
+export default function View() {
   useTitle("Lights");
+
+  const bridge = useSelectedBridge();
+  if (!bridge) {
+    return null;
+  }
 
   const [store, refresh] = useBridgeFunction(bridge, bridge.loadLights);
 
@@ -25,14 +31,19 @@ export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
       </ul>
     )
   );
-};
+}
 
-const Light: FC<{
+function Light({
+  bridge,
+  id,
+  light,
+  refresh
+}: {
   bridge: Bridge;
   id: string;
   light: Lights[0];
   refresh: () => void;
-}> = ({ bridge, id, light, refresh }) => {
+}) {
   const onClick = useCallback(() => {
     bridge.setLightState(id, { on: !light.state.on }).then(refresh);
   }, []);
@@ -46,4 +57,4 @@ const Light: FC<{
       <button onClick={onClick}>On/Off</button>
     </li>
   ));
-};
+}

@@ -1,10 +1,16 @@
 import { useObserver } from "mobx-react";
-import React, { FC, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Bridge, Groups } from "../store/bridge";
+import { useSelectedBridge } from "../store/bridges";
 import { useBridgeFunction, useTitle } from "../_hooks";
 
-export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
+export default function View() {
   useTitle("Rooms and Zones");
+
+  const bridge = useSelectedBridge();
+  if (!bridge) {
+    return null;
+  }
 
   const [store, refresh] = useBridgeFunction(bridge, bridge.loadGroups);
 
@@ -25,14 +31,19 @@ export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
       </ul>
     )
   );
-};
+}
 
-const Group: FC<{
+function Group({
+  bridge,
+  id,
+  group,
+  refresh
+}: {
   bridge: Bridge;
   id: string;
   group: Groups[0];
   refresh: () => void;
-}> = ({ bridge, id, group, refresh }) => {
+}) {
   const onClick = useCallback(() => {
     bridge.setGroupState(id, { on: !group.state.all_on }).then(refresh);
   }, []);
@@ -46,4 +57,4 @@ const Group: FC<{
       <button onClick={onClick}>On/Off</button>
     </li>
   ));
-};
+}

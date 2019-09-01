@@ -1,10 +1,16 @@
 import { useObserver } from "mobx-react";
-import React, { FC, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Bridge, BridgeConfig } from "../store/bridge";
+import { useSelectedBridge } from "../store/bridges";
 import { useBridgeFunction, useTitle } from "../_hooks";
 
-export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
+export default function View() {
   useTitle("Users");
+
+  const bridge = useSelectedBridge();
+  if (!bridge) {
+    return null;
+  }
 
   const [store] = useBridgeFunction(bridge, bridge.loadConfig);
 
@@ -27,13 +33,17 @@ export const View: FC<{ bridge: Bridge }> = ({ bridge }) => {
       </>
     )
   );
-};
+}
 
-const User: FC<{
+function User({
+  bridge,
+  username,
+  user
+}: {
   bridge: Bridge;
   username: string;
   user: BridgeConfig["whitelist"][0];
-}> = ({ bridge, username, user }) => {
+}) {
   const onClick = useCallback(() => bridge.deleteUser(), []);
 
   return useObserver(() => (
@@ -43,4 +53,4 @@ const User: FC<{
       <button onClick={onClick}>Delete</button>
     </li>
   ));
-};
+}

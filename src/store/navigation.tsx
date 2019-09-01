@@ -1,9 +1,34 @@
-import { computed, observable } from "mobx";
+import { computed, observable, runInAction } from "mobx";
 import { FC } from "react";
 import { createStore } from "../store-helper";
 import { Bridge } from "./bridge";
 
+export const enum Routes {
+  "/" = "/",
+  "/authorize" = "/authorize",
+  "/overview" = "/overview",
+  "/groups" = "/groups",
+  "/lights" = "/lights",
+  "/config" = "/config"
+}
+
 export class NavigationStore {
+  @observable
+  private _path = window.location.pathname;
+
+  @computed
+  public get path(): string {
+    return this._path;
+  }
+
+  public set to(url: string) {
+    runInAction(() => {
+      window.history.pushState({}, this.title || "Hue up", url);
+      this._path = url;
+      this.drawerOpen = false;
+    });
+  }
+
   @observable
   public drawerOpen = false;
 

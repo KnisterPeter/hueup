@@ -9,7 +9,8 @@
     "start": "webpack-dev-server --open",
     "clean": "rimraf ./dist",
     "prebuild": "yarn clean",
-    "build": "webpack -p",
+    "build": "NODE_ENV=production webpack -p",
+    "serve": "npx http-server -a localhost -p 1234 dist/",
     "predeploy": "yarn build",
     "deploy": "firebase deploy"
   },

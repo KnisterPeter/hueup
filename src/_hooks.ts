@@ -1,5 +1,5 @@
 import { useLocalStore } from "mobx-react";
-import { FC, useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Bridge } from "./store/bridge";
 import { useNavigation } from "./store/navigation";
 
@@ -49,18 +49,5 @@ export const useTitle = (title: string) => {
   useEffect(() => {
     navigation.title = title;
     return () => (navigation.title = undefined);
-  }, []);
-};
-
-export const useView = (
-  view: () => Promise<{ View: FC<{ bridge: Bridge }> }>
-) => {
-  const navigation = useNavigation();
-
-  return useCallback(() => {
-    view().then(({ View }) => {
-      navigation.view = View;
-      navigation.drawerOpen = false;
-    });
   }, []);
 };

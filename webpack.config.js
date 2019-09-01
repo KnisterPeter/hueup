@@ -6,6 +6,7 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
 const WorkboxPlugin = require("workbox-webpack-plugin");
 const WebpackPwaManifest = require("webpack-pwa-manifest");
 
+const useReact = process.env.REACT !== undefined;
 const dev = process.env.NODE_ENV !== "production";
 
 /**
@@ -18,6 +19,20 @@ const config = {
   devServer: {
     contentBase: "./dist",
     port: 1234
+  },
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: dev ? "app.js" : "app.[contenthash].js",
+    chunkFilename: dev ? "[id].js" : "[id].[contenthash].js"
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+    alias: useReact
+      ? undefined
+      : {
+          react: "preact/compat",
+          "react-dom": "preact/compat"
+        }
   },
   module: {
     rules: [
@@ -35,17 +50,6 @@ const config = {
         use: "file-loader"
       }
     ]
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js"],
-    alias: {
-      react: "preact/compat",
-      "react-dom": "preact/compat"
-    }
-  },
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "app.js"
   },
   plugins: [
     !dev &&

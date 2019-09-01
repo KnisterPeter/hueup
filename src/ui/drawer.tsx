@@ -7,12 +7,11 @@ import {
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { useObserver } from "mobx-react";
-import React, { FC, useCallback } from "react";
+import React, { useCallback } from "react";
 import { useBridges } from "../store/bridges";
-import { useNavigation } from "../store/navigation";
-import { useView } from "../_hooks";
+import { Routes as R, useNavigation } from "../store/navigation";
 
-export const Drawer: FC = () => {
+export function Drawer() {
   const bridges = useBridges();
   const navigation = useNavigation();
 
@@ -21,9 +20,9 @@ export const Drawer: FC = () => {
     navigation.drawerOpen = false;
   }, []);
 
-  const onShowGroups = useView(() => import("../view/groups"));
-  const onShowLigths = useView(() => import("../view/lights"));
-  const onShowConfig = useView(() => import("../view/config"));
+  const onShowGroups = useCallback(() => (navigation.to = R["/groups"]), []);
+  const onShowLigths = useCallback(() => (navigation.to = R["/lights"]), []);
+  const onShowConfig = useCallback(() => (navigation.to = R["/config"]), []);
 
   const openDrawer = useCallback(() => (navigation.drawerOpen = true), []);
   const closeDrawer = useCallback(() => (navigation.drawerOpen = false), []);
@@ -69,4 +68,4 @@ export const Drawer: FC = () => {
       </div>
     </SwipeableDrawer>
   ));
-};
+}
