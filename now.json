@@ -1,0 +1,9 @@
+{
+  "routes": [
+    { "src": "/authorize", "dest": "/" },
+    { "src": "/overview", "dest": "/" },
+    { "src": "/groups", "dest": "/" },
+    { "src": "/lights", "dest": "/" },
+    { "src": "/config", "dest": "/" }
+  ]
+}
