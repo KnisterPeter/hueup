@@ -1,18 +1,16 @@
 {
   "name": "hueup",
   "version": "0.1.0",
-  "main": "dist/index.ts",
+  "main": "public/index.ts",
   "repository": "git@github.com:KnisterPeter/hueup.git",
   "author": "Markus Wolf <mail@markus-wolf.de>",
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --open",
-    "clean": "rimraf ./dist",
+    "clean": "rimraf ./public",
     "prebuild": "yarn clean",
     "build": "NODE_ENV=production webpack -p",
-    "serve": "npx http-server -a localhost -p 1234 dist/",
-    "predeploy": "yarn build",
-    "deploy": "firebase deploy"
+    "serve": "npx http-server -a localhost -p 1234 public/"
   },
   "devDependencies": {
     "@types/react": "^16.9.2",
@@ -20,7 +18,6 @@
     "@types/styled-components": "^4.1.18",
     "css-loader": "^3.2.0",
     "file-loader": "^4.2.0",
-    "firebase-tools": "^7.3.0",
     "html-webpack-plugin": "^3.2.0",
     "prettier": "^1.18.2",
     "rimraf": "^3.0.0",

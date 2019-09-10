@@ -17,11 +17,11 @@ const config = {
   entry: "./src/index.tsx",
   devtool: dev ? "source-map" : false,
   devServer: {
-    contentBase: "./dist",
+    contentBase: "./public",
     port: 1234
   },
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "public"),
     filename: dev ? "app.js" : "app.[contenthash].js",
     chunkFilename: dev ? "[id].js" : "[id].[contenthash].js"
   },
