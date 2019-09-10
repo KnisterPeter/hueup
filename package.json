@@ -5,6 +5,9 @@
   "repository": "git@github.com:KnisterPeter/hueup.git",
   "author": "Markus Wolf <mail@markus-wolf.de>",
   "license": "MIT",
+  "engines": {
+    "node": "10.x"
+  },
   "scripts": {
     "start": "webpack-dev-server --open",
     "clean": "rimraf ./public",
