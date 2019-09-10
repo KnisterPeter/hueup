@@ -19,14 +19,24 @@ export function Drawer() {
   const onChangeBridge = useCallback(() => {
     bridges.select(undefined);
     navigation.drawerOpen = false;
-  }, []);
+  }, [bridges, navigation]);
 
-  const onShowGroups = useCallback(() => (navigation.to = R["/groups"]), []);
-  const onShowLigths = useCallback(() => (navigation.to = R["/lights"]), []);
-  const onShowConfig = useCallback(() => (navigation.to = R["/config"]), []);
+  const onShowGroups = useCallback(() => (navigation.to = R["/groups"]), [
+    navigation
+  ]);
+  const onShowLigths = useCallback(() => (navigation.to = R["/lights"]), [
+    navigation
+  ]);
+  const onShowConfig = useCallback(() => (navigation.to = R["/config"]), [
+    navigation
+  ]);
 
-  const openDrawer = useCallback(() => (navigation.drawerOpen = true), []);
-  const closeDrawer = useCallback(() => (navigation.drawerOpen = false), []);
+  const openDrawer = useCallback(() => (navigation.drawerOpen = true), [
+    navigation
+  ]);
+  const closeDrawer = useCallback(() => (navigation.drawerOpen = false), [
+    navigation
+  ]);
 
   return useObserver(() => (
     <SwipeableDrawer

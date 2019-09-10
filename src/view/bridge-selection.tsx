@@ -31,7 +31,7 @@ export default function BridgeSelection() {
 
 function BridgeItem({ bridge }: { bridge: Bridge }) {
   const bridges = useBridges();
-  const onChange = useCallback(() => bridges.select(bridge), []);
+  const onChange = useCallback(() => bridges.select(bridge), [bridges, bridge]);
 
   return useObserver(() => (
     <ListItem onClick={onChange}>

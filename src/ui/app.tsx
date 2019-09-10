@@ -23,7 +23,7 @@ export function App() {
 
   const toggleDrawer = useCallback(() => {
     navigation.drawerOpen = !navigation.drawerOpen;
-  }, []);
+  }, [navigation]);
 
   return useObserver(() => (
     <>
