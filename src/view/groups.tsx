@@ -56,7 +56,7 @@ function Group({
 }) {
   const onClick = useCallback(() => {
     bridge.setGroupState(id, { on: !group.state.all_on }).then(refresh);
-  }, []);
+  }, [bridge, id, group, refresh]);
 
   return useObserver(() => (
     <ListItem>

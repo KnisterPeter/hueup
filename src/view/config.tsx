@@ -45,7 +45,7 @@ function User({
   username: string;
   user: BridgeConfig["whitelist"][0];
 }) {
-  const onClick = useCallback(() => bridge.deleteUser(), []);
+  const onClick = useCallback(() => bridge.deleteUser(), [bridge]);
 
   return useObserver(() => (
     <li>

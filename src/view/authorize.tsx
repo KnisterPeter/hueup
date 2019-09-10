@@ -59,7 +59,11 @@ export default function Authorize() {
           break;
       }
     });
-  }, []);
+  }, [bridge, state]);
+
+  const onCancel = useCallback(() => {
+    bridges.select(undefined);
+  }, [bridges]);
 
   const spacing = 4;
 
@@ -86,6 +90,13 @@ export default function Authorize() {
         >
           Authorize
         </Button>
+        {!state.busy && (
+          <Grid item xs={8}>
+            <Button variant="contained" color="secondary" onClick={onCancel}>
+              Cancel
+            </Button>
+          </Grid>
+        )}
         {state.message && (
           <Grid item xs={8}>
             <Typography>{state.message}</Typography>

@@ -56,7 +56,7 @@ function Light({
 }) {
   const onClick = useCallback(() => {
     bridge.setLightState(id, { on: !light.state.on }).then(refresh);
-  }, []);
+  }, [bridge, id, light, refresh]);
 
   return useObserver(() => (
     <ListItem>
