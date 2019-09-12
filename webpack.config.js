@@ -14,11 +14,12 @@ const useReact = process.env.REACT !== undefined;
  */
 const config = {
   mode: dev ? "development" : "production",
+  stats: dev ? "minimal" : "normal",
   entry: "./src/index.tsx",
   devtool: dev ? "source-map" : false,
   devServer: {
     contentBase: "./public",
-    port: 1234
+    port: process.env.PORT || 1234
   },
   output: {
     path: path.resolve(__dirname, "public"),

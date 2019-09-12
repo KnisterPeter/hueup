@@ -1,5 +1,10 @@
 {
+  "builds": [
+    { "src": "package.json", "use": "@now/static-build" },
+    { "src": "api/**/*.ts", "use": "@now/node" }
+  ],
   "routes": [
+    { "src": "/api/(?<path>.*)", "dest": "/api/$path.ts" },
     { "src": "/authorize", "dest": "/" },
     { "src": "/overview", "dest": "/" },
     { "src": "/groups", "dest": "/" },
