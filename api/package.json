@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "hueup-api",
+  "version": "0",
+  "engines": {
+    "node": "10.x"
+  },
+  "scripts": {
+    "now-build": ""
+  }
+}
