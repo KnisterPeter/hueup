@@ -10,7 +10,7 @@ import { useObserver } from "mobx-react-lite";
 import React, { useCallback } from "react";
 import logo from "../logo.png";
 import { useBridges } from "../store/bridges";
-import { Routes as R, useNavigation } from "../store/navigation";
+import { Routes as R, Routes, useNavigation } from "../store/navigation";
 
 export function Drawer() {
   const bridges = useBridges();
@@ -19,6 +19,7 @@ export function Drawer() {
   const onChangeBridge = useCallback(() => {
     bridges.select(undefined);
     navigation.drawerOpen = false;
+    navigation.to = Routes["/"];
   }, [bridges, navigation]);
 
   const onShowGroups = useCallback(() => (navigation.to = R["/groups"]), [
