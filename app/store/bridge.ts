@@ -2,15 +2,21 @@ import { computed, observable } from "mobx";
 import { objectToUrl, urlToObject } from "../../common/url";
 import { NavigationStore, Routes } from "./navigation";
 
-const appConfigs: Record<string, { clientid: string; appid: string }> = {
-  "localhost:1234": {
-    clientid: "h9CI9pjTNY9wuT5NYxzQBBFShsqCYQuw",
-    appid: "hueup-dev"
-  },
-  "hueup.matrixweb.de": {
-    clientid: "gcz46Ozcl1o5XJKz8F1v5NEwICiQ5ty8",
-    appid: "hueup"
-  }
+const appConfig = () => {
+  const configs = {
+    "localhost:1234": {
+      clientid: "h9CI9pjTNY9wuT5NYxzQBBFShsqCYQuw",
+      appid: "hueup-dev"
+    },
+    "hueup.matrixweb.de": {
+      clientid: "gcz46Ozcl1o5XJKz8F1v5NEwICiQ5ty8",
+      appid: "hueup"
+    }
+  } as const;
+
+  return window.location.host !== "localhost:1234"
+    ? configs["hueup.matrixweb.de"]
+    : configs["localhost:1234"];
 };
 
 export interface BridgeConfig {
@@ -182,7 +188,7 @@ export class Bridge {
     })(32);
 
     window.location.href = `https://api.meethue.com/oauth2/auth?${objectToUrl({
-      ...appConfigs[window.location.host],
+      ...appConfig(),
       deviceid: "hueup",
       devicename: `Browser/App (${navigator.platform})`,
       state: this.csrfToken!,
@@ -209,7 +215,7 @@ export class Bridge {
 
     const tokenResponse = await fetch(
       `/api/oauth2/token?${objectToUrl({
-        clientid: appConfigs[window.location.host].clientid,
+        clientid: appConfig().clientid,
         code
       })}`,
       {
