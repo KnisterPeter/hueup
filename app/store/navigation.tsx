@@ -1,11 +1,12 @@
-import { computed, observable, runInAction } from "mobx";
+import { computed, observable } from "mobx";
 import { FC } from "react";
 import { Bridge } from "./bridge";
 import { createStore } from "./_helper";
 
-export const enum Routes {
+export enum Routes {
   "/" = "/",
   "/authorize" = "/authorize",
+  "/authorized" = "/authorized",
   "/overview" = "/overview",
   "/groups" = "/groups",
   "/lights" = "/lights",
@@ -21,12 +22,10 @@ export class NavigationStore {
     return this._path;
   }
 
-  public set to(url: string) {
-    runInAction(() => {
-      window.history.pushState({}, this.title || "Hue up", url);
-      this._path = url;
-      this.drawerOpen = false;
-    });
+  public set to(route: Routes) {
+    window.history.pushState({}, this.title || "Hue up", Routes[route]);
+    this._path = Routes[route];
+    this.drawerOpen = false;
   }
 
   @observable

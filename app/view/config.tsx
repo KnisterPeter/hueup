@@ -1,4 +1,4 @@
-import { useObserver } from "mobx-react";
+import { useObserver } from "mobx-react-lite";
 import React, { useCallback } from "react";
 import { useBridgeFunction } from "../hooks/bridge-function";
 import { useTitle } from "../hooks/title";

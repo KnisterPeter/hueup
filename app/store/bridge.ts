@@ -1,4 +1,17 @@
-import { action, computed, observable } from "mobx";
+import { computed, observable } from "mobx";
+import { objectToUrl, urlToObject } from "../../common/url";
+import { NavigationStore, Routes } from "./navigation";
+
+const appConfigs: Record<string, { clientid: string; appid: string }> = {
+  "localhost:1234": {
+    clientid: "h9CI9pjTNY9wuT5NYxzQBBFShsqCYQuw",
+    appid: "hueup-dev"
+  },
+  "hueup.matrixweb.de": {
+    clientid: "gcz46Ozcl1o5XJKz8F1v5NEwICiQ5ty8",
+    appid: "hueup"
+  }
+};
 
 export interface BridgeConfig {
   name: string;
@@ -123,14 +136,6 @@ export interface Groups {
   };
 }
 
-export enum AuthorizationStatus {
-  tryAgain,
-  noResponse,
-  pressButtonOnBridge,
-  unknownError,
-  unknownResponse
-}
-
 export class Bridge {
   @observable
   private data: Bridge;
@@ -155,70 +160,84 @@ export class Bridge {
   }
 
   @computed
-  public get clientkey(): string | undefined {
-    return this.data.clientkey;
+  public get csrfToken(): string | undefined {
+    return this.data.csrfToken;
   }
 
-  public set clientkey(clientkey: string | undefined) {
-    this.data.clientkey = clientkey;
+  public set csrfToken(csrfToken: string | undefined) {
+    this.data.csrfToken = csrfToken;
   }
 
-  constructor(data: Bridge) {
+  constructor(data: Bridge, private navigation: NavigationStore) {
     this.data = data;
   }
 
-  @action
-  public async authorize(
-    status: (status: AuthorizationStatus) => void
-  ): Promise<void> {
-    const wait = async () => new Promise(resolve => setTimeout(resolve, 1500));
+  public startAuth(): void {
+    this.csrfToken = (function char(n: number): string {
+      const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+      return (
+        chars[Math.floor(Math.random() * chars.length)] +
+        (n > 0 ? char(n - 1) : "")
+      );
+    })(32);
 
-    let until = Date.now() + 1000 * 30;
-
-    while (until > Date.now()) {
-      console.log("until", until, Date.now());
-
-      const response = await fetch(`http://${this.internalipaddress}/api`, {
-        mode: "cors",
-        method: "POST",
-        body: JSON.stringify({
-          devicetype: "hueup#devicename",
-          generateclientkey: true
-        })
-      });
-
-      const data: {
-        success?: { username: string; clientkey?: string };
-        error?: { type: number };
-      }[] = await response.json();
-
-      if (data.length === 0) {
-        status(AuthorizationStatus.noResponse);
-        return;
-      } else {
-        if (data[0].error) {
-          if (data[0].error.type === 101) {
-            status(AuthorizationStatus.pressButtonOnBridge);
-            await wait();
-          } else {
-            status(AuthorizationStatus.unknownError);
-            return;
-          }
-        } else if (data[0].success) {
-          this.username = data[0].success.username;
-          this.clientkey = data[0].success.clientkey;
-          return;
-        } else {
-          console.log(data);
-          status(AuthorizationStatus.unknownResponse);
-          return;
-        }
-      }
-    }
-    status(AuthorizationStatus.tryAgain);
+    window.location.href = `https://api.meethue.com/oauth2/auth?${objectToUrl({
+      ...appConfigs[window.location.host],
+      deviceid: "hueup",
+      devicename: `Browser/App (${navigator.platform})`,
+      state: this.csrfToken!,
+      response_type: "code"
+    })}`;
   }
 
-  @action
+  public async continueAuth(): Promise<void> {
+    const params = urlToObject(window.location.search);
+    if (!params.code) {
+      this.navigation.to = Routes["/authorize"];
+      return;
+    }
+
+    if (params.state !== this.csrfToken) {
+      console.warn("Invalid csrf token detected");
+      this.csrfToken = undefined;
+      this.navigation.to = Routes["/"];
+      return;
+    }
+    this.csrfToken = undefined;
+
+    const code = params.code;
+
+    const tokenResponse = await fetch(
+      `/api/oauth2/token?${objectToUrl({
+        clientid: appConfigs[window.location.host].clientid,
+        code
+      })}`,
+      {
+        method: "POST",
+        credentials: "same-origin"
+      }
+    );
+
+    if (tokenResponse.status === 401) {
+      this.navigation.to = Routes["/authorize"];
+      return;
+    }
+
+    const userResponse = await fetch("/api/oauth2/user", {
+      method: "POST"
+    });
+
+    if (userResponse.status !== 200) {
+      this.navigation.to = Routes["/"];
+      return;
+    }
+
+    const data: [{ success: { username: string } }] = await userResponse.json();
+    this.username = data[0].success.username;
+
+    this.navigation.to = Routes["/overview"];
+  }
+
   public async loadConfig(): Promise<BridgeConfig> {
     const response = await fetch(
       `http://${this.internalipaddress}/api/${this.username}/config`,
@@ -229,12 +248,10 @@ export class Bridge {
     return await response.json();
   }
 
-  @action
   public async deleteUser(): Promise<void> {
     window.open("https://account.meethue.com/apps", "_blank");
   }
 
-  @action
   public async loadLights(): Promise<Lights> {
     const response = await fetch(
       `http://${this.internalipaddress}/api/${this.username}/lights`,
@@ -245,7 +262,6 @@ export class Bridge {
     return await response.json();
   }
 
-  @action
   public async setLightState(
     id: string,
     state: { on: boolean }
@@ -261,26 +277,18 @@ export class Bridge {
     return await response.json();
   }
 
-  @action
   public async loadGroups(): Promise<Groups> {
-    const response = await fetch(
-      `http://${this.internalipaddress}/api/${this.username}/groups`,
-      {
-        mode: "cors"
-      }
-    );
+    const response = await fetch(`/api/groups/list?username=${this.username}`);
     return await response.json();
   }
 
-  @action
   public async setGroupState(
     id: string,
     state: { on: boolean }
   ): Promise<void> {
     const response = await fetch(
-      `http://${this.internalipaddress}/api/${this.username}/groups/${id}/action`,
+      `/api/groups/action?username=${this.username}&id=${id}`,
       {
-        mode: "cors",
         method: "PUT",
         body: JSON.stringify(state)
       }

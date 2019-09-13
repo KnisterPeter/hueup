@@ -7,11 +7,12 @@ import {
   ListItemText
 } from "@material-ui/core";
 import InboxIcon from "@material-ui/icons/Inbox";
-import { useObserver } from "mobx-react";
+import { useObserver } from "mobx-react-lite";
 import React, { useCallback } from "react";
 import { useTitle } from "../hooks/title";
 import { Bridge } from "../store/bridge";
 import { useBridges } from "../store/bridges";
+import { Routes, useNavigation } from "../store/navigation";
 
 export default function BridgeSelection() {
   useTitle("Select your bridge");
@@ -30,8 +31,12 @@ export default function BridgeSelection() {
 }
 
 function BridgeItem({ bridge }: { bridge: Bridge }) {
+  const navigation = useNavigation();
   const bridges = useBridges();
-  const onChange = useCallback(() => bridges.select(bridge), [bridges, bridge]);
+  const onChange = useCallback(() => {
+    bridges.select(bridge);
+    navigation.to = Routes["/overview"];
+  }, [bridges, bridge, navigation]);
 
   return useObserver(() => (
     <ListItem onClick={onChange}>

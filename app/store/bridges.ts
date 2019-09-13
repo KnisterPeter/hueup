@@ -1,4 +1,4 @@
-import { action, autorun, computed, observable, reaction } from "mobx";
+import { autorun, computed, observable, reaction } from "mobx";
 import * as storage from "../storage";
 import { Bridge } from "./bridge";
 import { NavigationStore, Routes, useNavigation } from "./navigation";
@@ -23,7 +23,7 @@ export class BridgesStore {
     if (!data) {
       return undefined;
     }
-    return new Bridge(data);
+    return new Bridge(data, this.navigation);
   }
 
   @observable
@@ -42,27 +42,14 @@ export class BridgesStore {
     return this.selected !== undefined && this.selected.username !== undefined;
   }
 
-  constructor(navigation: NavigationStore) {
+  constructor(private navigation: NavigationStore) {
     this.discover();
     this.setupStorage();
-
-    reaction(
-      () => this._selected,
-      selected => {
-        if (selected) {
-          navigation.to = Routes["/authorize"];
-        } else {
-          navigation.to = Routes["/"];
-        }
-      },
-      { fireImmediately: true }
-    );
   }
 
-  @action
-  private async setupStorage(): Promise<void> {
-    this._known = await storage.load("known-bridges", []);
-    this._selected = await storage.load("selected-bridge", undefined);
+  private setupStorage(): void {
+    this._known = storage.load("known-bridges", []);
+    this._selected = storage.load("selected-bridge", undefined);
 
     autorun(() => {
       storage.save("known-bridges", this._known);
@@ -76,7 +63,6 @@ export class BridgesStore {
     );
   }
 
-  @action
   private async discover(): Promise<void> {
     // todo: handle error
     const response = await fetch("https://discovery.meethue.com/", {
@@ -92,7 +78,6 @@ export class BridgesStore {
     this._known = [...this._known, ...newBridges];
   }
 
-  @action
   public select(bridge?: Bridge): void {
     this._selected = bridge ? bridge.id : undefined;
   }

@@ -7,5 +7,5 @@ export const useTitle = (title: string) => {
   useEffect(() => {
     navigation.title = title;
     return () => (navigation.title = undefined);
-  }, []);
+  }, [navigation]);
 };

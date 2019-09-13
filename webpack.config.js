@@ -15,7 +15,7 @@ const useReact = process.env.REACT !== undefined;
 const config = {
   mode: dev ? "development" : "production",
   stats: dev ? "minimal" : "normal",
-  entry: "./src/index.tsx",
+  entry: "./app/index.tsx",
   devtool: dev ? "source-map" : false,
   devServer: {
     contentBase: "./public",
@@ -53,11 +53,14 @@ const config = {
     ]
   },
   plugins: [
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: "development"
+    }),
     !dev &&
       new BundleAnalyzerPlugin({ analyzerMode: "static", openAnalyzer: false }),
     new HtmlWebpackPlugin({
       title: "hue up",
-      template: "./src/index.html"
+      template: "./app/index.html"
     }),
     new WebpackPwaManifest({
       name: "hue up",
@@ -67,7 +70,7 @@ const config = {
       display: "standalone",
       icons: [
         {
-          src: "./src/logo.png",
+          src: "./app/logo.png",
           sizes: "200x200",
           type: "image/png"
         }

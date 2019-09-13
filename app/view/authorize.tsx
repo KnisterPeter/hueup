@@ -5,20 +5,16 @@ import {
   Grid,
   Typography
 } from "@material-ui/core";
-import { useLocalStore, useObserver } from "mobx-react-lite";
-import React, { useCallback } from "react";
+import { useObserver } from "mobx-react-lite";
+import React, { useCallback, useState } from "react";
 import { useTitle } from "../hooks/title";
-import { AuthorizationStatus } from "../store/bridge";
 import { useBridges } from "../store/bridges";
 import { Routes, useNavigation } from "../store/navigation";
 
 export default function Authorize() {
   useTitle("Authorize bridge");
 
-  const state = useLocalStore<{ busy: boolean; message?: string }>(() => ({
-    busy: false,
-    message: undefined
-  }));
+  const [busy, setBusy] = useState(false);
 
   const bridges = useBridges();
   const navigation = useNavigation();
@@ -35,35 +31,14 @@ export default function Authorize() {
   }
 
   const onAuthorize = useCallback(() => {
-    state.busy = true;
-    bridge.authorize(status => {
-      switch (status) {
-        case AuthorizationStatus.noResponse:
-          state.message = "No response from bridge";
-          state.busy = false;
-          break;
-        case AuthorizationStatus.pressButtonOnBridge:
-          state.message = "Press button on the bridge now";
-          break;
-        case AuthorizationStatus.tryAgain:
-          state.message = "Try again authorize app";
-          state.busy = false;
-          break;
-        case AuthorizationStatus.unknownError:
-          state.message = "Unknown error from the bridge";
-          state.busy = false;
-          break;
-        case AuthorizationStatus.unknownResponse:
-          state.message = "Unknown response from the bridge";
-          state.busy = false;
-          break;
-      }
-    });
-  }, [bridge, state]);
+    setBusy(true);
+    bridge.startAuth();
+  }, [bridge, setBusy]);
 
   const onCancel = useCallback(() => {
     bridges.select(undefined);
-  }, [bridges]);
+    navigation.to = Routes["/"];
+  }, [bridges, navigation]);
 
   const spacing = 4;
 
@@ -86,23 +61,18 @@ export default function Authorize() {
           variant="contained"
           color="primary"
           onClick={onAuthorize}
-          disabled={state.busy}
+          disabled={busy}
         >
           Authorize
         </Button>
-        {!state.busy && (
+        {!busy && (
           <Grid item xs={8}>
             <Button variant="contained" color="secondary" onClick={onCancel}>
               Cancel
             </Button>
           </Grid>
         )}
-        {state.message && (
-          <Grid item xs={8}>
-            <Typography>{state.message}</Typography>
-          </Grid>
-        )}
-        {state.busy && <CircularProgress />}
+        {busy && <CircularProgress />}
       </Grid>
     </Box>
   ));
