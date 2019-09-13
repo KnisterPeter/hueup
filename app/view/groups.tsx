@@ -6,23 +6,23 @@ import {
   ListItemText,
   Switch
 } from "@material-ui/core";
-import WbIncandescentRoundedIcon from "@material-ui/icons/WbIncandescentRounded";
-import { useObserver } from "mobx-react";
+import FilterNoneRoundedIcon from "@material-ui/icons/FilterNoneRounded";
+import { useObserver } from "mobx-react-lite";
 import React, { useCallback } from "react";
 import { useBridgeFunction } from "../hooks/bridge-function";
 import { useTitle } from "../hooks/title";
-import { Bridge, Lights } from "../store/bridge";
+import { Bridge, Groups } from "../store/bridge";
 import { useSelectedBridge } from "../store/bridges";
 
 export default function View() {
-  useTitle("Lights");
+  useTitle("Rooms and Zones");
 
   const bridge = useSelectedBridge();
   if (!bridge) {
     return null;
   }
 
-  const [store, refresh] = useBridgeFunction(bridge, bridge.loadLights);
+  const [store, refresh] = useBridgeFunction(bridge, bridge.loadGroups);
 
   return useObserver(() =>
     store.loading ? (
@@ -30,11 +30,11 @@ export default function View() {
     ) : (
       <List>
         {Object.keys(store.value).map(id => (
-          <Light
+          <Group
             key={id}
             bridge={bridge}
             id={id}
-            light={store.value[id]}
+            group={store.value[id]}
             refresh={refresh}
           />
         ))}
@@ -43,29 +43,29 @@ export default function View() {
   );
 }
 
-function Light({
+function Group({
   bridge,
   id,
-  light,
+  group,
   refresh
 }: {
   bridge: Bridge;
   id: string;
-  light: Lights[0];
+  group: Groups[0];
   refresh: () => void;
 }) {
   const onClick = useCallback(() => {
-    bridge.setLightState(id, { on: !light.state.on }).then(refresh);
-  }, [bridge, id, light, refresh]);
+    bridge.setGroupState(id, { on: !group.state.all_on }).then(refresh);
+  }, [bridge, id, group, refresh]);
 
   return useObserver(() => (
     <ListItem>
       <ListItemIcon>
-        <WbIncandescentRoundedIcon />
+        <FilterNoneRoundedIcon />
       </ListItemIcon>
-      <ListItemText primary={light.name} />
+      <ListItemText primary={group.name} />
       <ListItemSecondaryAction>
-        <Switch edge="end" onChange={onClick} checked={light.state.on} />
+        <Switch edge="end" onChange={onClick} checked={group.state.all_on} />
       </ListItemSecondaryAction>
     </ListItem>
   ));

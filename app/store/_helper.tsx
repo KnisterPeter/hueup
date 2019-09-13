@@ -1,4 +1,4 @@
-import { useLocalStore } from "mobx-react";
+import { useLocalStore } from "mobx-react-lite";
 import React, { createContext, FC, PropsWithChildren, useContext } from "react";
 
 export function createStore<T, D extends object>(

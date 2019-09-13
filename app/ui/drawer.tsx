@@ -6,7 +6,7 @@ import {
   SwipeableDrawer
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import { useObserver } from "mobx-react";
+import { useObserver } from "mobx-react-lite";
 import React, { useCallback } from "react";
 import logo from "../logo.png";
 import { useBridges } from "../store/bridges";

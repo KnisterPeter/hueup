@@ -1,4 +1,4 @@
-import { useLocalStore } from "mobx-react";
+import { useLocalStore } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import { Bridge } from "../store/bridge";
 
