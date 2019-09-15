@@ -8,7 +8,6 @@
     "declarationMap": false,
     "sourceMap": true,
     "outDir": ".",
-    "noEmit": true,
     "importHelpers": true,
     "strict": true,
     "noUnusedLocals": true,
