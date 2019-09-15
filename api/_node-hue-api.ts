@@ -43,7 +43,7 @@ declare module "node-hue-api" {
   }
 
   class Groups {
-    getAll(): Promise<void>;
+    getAll(): Promise<unknown>;
     get(id: string): Promise<void>;
     getByName(name: string): Promise<void>;
     createGroup(name: string, lights: string[]): Promise<void>;
@@ -73,7 +73,7 @@ declare module "node-hue-api" {
   }
 
   class Lights {
-    getAll(): Promise<void>;
+    getAll(): Promise<unknown>;
     getLightById(id: string): Promise<void>;
     getLightByName(name: string): Promise<void>;
     getNew(): Promise<void>;

@@ -1,7 +1,6 @@
-/// <reference path="./node-hue-api.d.ts" />
-
 import { NowRequest, NowResponse } from "@now/node";
 import { v3 } from "node-hue-api";
+import "./_node-hue-api";
 import { asString } from "./_query";
 import { withToken } from "./_token";
 
