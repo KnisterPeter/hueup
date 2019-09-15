@@ -13,6 +13,7 @@
     { "src": "/config", "dest": "/" }
   ],
   "env": {
+    "CLIENTID": "@hueup-clientid",
     "CLIENTSECRET": "@hueup-clientsecret"
   }
 }

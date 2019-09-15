@@ -11,8 +11,9 @@ import { useObserver } from "mobx-react-lite";
 import React, { useCallback } from "react";
 import { useBridgeFunction } from "../hooks/bridge-function";
 import { useTitle } from "../hooks/title";
-import { Bridge, Groups } from "../store/bridge";
+import { Bridge } from "../store/bridge";
 import { useSelectedBridge } from "../store/bridges";
+import { Group } from "../store/groups";
 
 export default function View() {
   useTitle("Rooms and Zones");
@@ -30,7 +31,7 @@ export default function View() {
     ) : (
       <List>
         {Object.keys(store.value).map(id => (
-          <Group
+          <GroupView
             key={id}
             bridge={bridge}
             id={id}
@@ -43,7 +44,7 @@ export default function View() {
   );
 }
 
-function Group({
+function GroupView({
   bridge,
   id,
   group,
@@ -51,7 +52,7 @@ function Group({
 }: {
   bridge: Bridge;
   id: string;
-  group: Groups[0];
+  group: Group;
   refresh: () => void;
 }) {
   const onClick = useCallback(() => {

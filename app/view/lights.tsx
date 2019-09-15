@@ -11,8 +11,9 @@ import { useObserver } from "mobx-react-lite";
 import React, { useCallback } from "react";
 import { useBridgeFunction } from "../hooks/bridge-function";
 import { useTitle } from "../hooks/title";
-import { Bridge, Lights } from "../store/bridge";
+import { Bridge } from "../store/bridge";
 import { useSelectedBridge } from "../store/bridges";
+import { Light } from "../store/lights";
 
 export default function View() {
   useTitle("Lights");
@@ -30,7 +31,7 @@ export default function View() {
     ) : (
       <List>
         {Object.keys(store.value).map(id => (
-          <Light
+          <LightView
             key={id}
             bridge={bridge}
             id={id}
@@ -43,7 +44,7 @@ export default function View() {
   );
 }
 
-function Light({
+function LightView({
   bridge,
   id,
   light,
@@ -51,7 +52,7 @@ function Light({
 }: {
   bridge: Bridge;
   id: string;
-  light: Lights[0];
+  light: Light;
   refresh: () => void;
 }) {
   const onClick = useCallback(() => {

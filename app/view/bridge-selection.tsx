@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import InboxIcon from "@material-ui/icons/Inbox";
 import { useObserver } from "mobx-react-lite";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useTitle } from "../hooks/title";
 import { Bridge } from "../store/bridge";
 import { useBridges } from "../store/bridges";
@@ -17,7 +17,14 @@ import { Routes, useNavigation } from "../store/navigation";
 export default function BridgeSelection() {
   useTitle("Select your bridge");
 
+  const navigation = useNavigation();
   const bridges = useBridges();
+
+  useEffect(() => {
+    if (bridges.selected) {
+      navigation.to = Routes["/authorize"];
+    }
+  }, [bridges, navigation]);
 
   return useObserver(() => (
     <Container maxWidth="sm">
