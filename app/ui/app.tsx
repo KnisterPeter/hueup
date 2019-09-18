@@ -1,13 +1,17 @@
 import {
   AppBar,
+  Button,
   CssBaseline,
   IconButton,
+  Snackbar,
   Toolbar,
   Typography
 } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import MenuIcon from "@material-ui/icons/Menu";
 import { useObserver } from "mobx-react-lite";
 import React, { FC, lazy, Suspense, useCallback } from "react";
+import { useServiceWorkerInstallPrompt } from "../pwa";
 import { Routes, useNavigation } from "../store/navigation";
 import BridgeSelection from "../view/bridge-selection";
 import { Drawer } from "./drawer";
@@ -21,6 +25,12 @@ const LazyConfig = lazy(() => import("../view/config"));
 
 export function App() {
   const navigation = useNavigation();
+
+  const [
+    updateAvailable,
+    promptForUpdate,
+    cancelUpdate
+  ] = useServiceWorkerInstallPrompt();
 
   const toggleDrawer = useCallback(() => {
     navigation.drawerOpen = !navigation.drawerOpen;
@@ -45,6 +55,19 @@ export function App() {
       <Route path={Routes["/groups"]} view={LazyGroups} />
       <Route path={Routes["/lights"]} view={LazyLights} />
       <Route path={Routes["/config"]} view={LazyConfig} />
+      <Snackbar
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+        open={updateAvailable}
+        onClose={cancelUpdate}
+        message="Update availble"
+      >
+        <Button color="primary" size="small" onClick={promptForUpdate}>
+          INSTALL
+        </Button>
+        <IconButton onClick={cancelUpdate}>
+          <CloseIcon />
+        </IconButton>
+      </Snackbar>
     </>
   ));
 }
