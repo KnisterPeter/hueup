@@ -23,12 +23,7 @@ export function useServiceWorkerInstallPrompt(): [
       setInstallPrompt(e);
     });
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      // for development auto reload, for production inform user of update
-      if (process.env.NODE_ENV !== "production") {
-        window.location.reload();
-      } else {
-        setUpdateAvailable(true);
-      }
+      setUpdateAvailable(true);
     });
   }, []);
 
