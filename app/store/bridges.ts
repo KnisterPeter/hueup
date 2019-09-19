@@ -9,25 +9,25 @@ const id = (bridge: Bridge) => {
 };
 
 export class BridgesStore {
-  @observable
-  private _selected?: string;
-
   @computed
-  private get selectedData(): Bridge | undefined {
-    return this._known.find(bridge => bridge.id === this._selected);
-  }
-
-  @computed
-  public get selected(): Bridge | undefined {
-    const data = this.selectedData;
+  public get selected(): Bridge {
+    const data = this._known.find(bridge => bridge.id === this._selected);
     if (!data) {
-      return undefined;
+      throw new Error("No bridge selected (should not happen)");
     }
     return new Bridge(data, this.navigation);
   }
 
   @observable
-  private _known: Bridge[] = [];
+  private _known: Bridge[] = [
+    {
+      id: "remote",
+      internalipaddress: "<remote>"
+    } as any
+  ];
+
+  @observable
+  private _selected = this._known[0].id;
 
   @observable
   private _bridges: Bridge[] = [];
@@ -48,8 +48,8 @@ export class BridgesStore {
   }
 
   private setupStorage(): void {
-    this._known = storage.load("known-bridges", []);
-    this._selected = storage.load("selected-bridge", undefined);
+    this._known = storage.load("known-bridges", this._known);
+    this._selected = storage.load("selected-bridge", this._known[0].id);
 
     autorun(() => {
       storage.save("known-bridges", this._known);
@@ -64,6 +64,16 @@ export class BridgesStore {
   }
 
   private async discover(): Promise<void> {
+    this._known = [
+      {
+        id: "remote",
+        internalipaddress: "<remote>"
+      } as any
+    ];
+    this.select(this._known[0]);
+
+    return;
+
     // todo: handle error
     const response = await fetch("https://discovery.meethue.com/", {
       credentials: "omit",
@@ -79,7 +89,7 @@ export class BridgesStore {
   }
 
   public select(bridge?: Bridge): void {
-    this._selected = bridge ? bridge.id : undefined;
+    this._selected = bridge ? bridge.id : this._known[0].id;
   }
 }
 

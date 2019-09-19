@@ -19,13 +19,13 @@ export default function Authorize() {
   const bridges = useBridges();
   const navigation = useNavigation();
 
-  if (!bridges.selected) {
-    navigation.to = Routes["/"];
-    return null;
-  }
+  // if (!bridges.selected) {
+  //   navigation.to = Routes["/"];
+  //   return null;
+  // }
   const bridge = bridges.selected;
 
-  if (bridge.username) {
+  if (bridge && bridge.username) {
     navigation.to = Routes["/overview"];
     return null;
   }
