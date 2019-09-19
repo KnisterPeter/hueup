@@ -29,6 +29,9 @@ export function useServiceWorkerInstallPrompt(): [
 
   const promptForUpdate = useCallback(() => {
     if (!installPrompt) {
+      if (window.location) {
+        window.location.reload();
+      }
       return;
     }
     installPrompt.prompt();
