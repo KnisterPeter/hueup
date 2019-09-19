@@ -20,6 +20,9 @@ export default function BridgeSelection() {
   const navigation = useNavigation();
   const bridges = useBridges();
 
+  navigation.to = Routes["/authorize"];
+  return null;
+
   useEffect(() => {
     if (bridges.selected) {
       navigation.to = Routes["/authorize"];
