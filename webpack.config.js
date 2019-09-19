@@ -77,9 +77,10 @@ const config = {
       ]
     }),
     new WorkboxPlugin.GenerateSW({
-      importWorkboxFrom: "local",
       clientsClaim: true,
-      skipWaiting: true
+      skipWaiting: true,
+      navigateFallback: "/index.html",
+      cleanupOutdatedCaches: true
     })
   ].filter(Boolean)
 };
