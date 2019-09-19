@@ -63,8 +63,8 @@ const config = {
       template: "./app/index.html"
     }),
     new WebpackPwaManifest({
-      name: "hue up",
-      short_name: "hue up",
+      name: "hueup",
+      short_name: "hueup",
       description: "Conigure your Hue network",
       crossorigin: "anonymous",
       display: "standalone",
