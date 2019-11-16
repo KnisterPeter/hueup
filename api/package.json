@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@now/node": "1.1.2",
-    "node-hue-api": "3.4.0",
+    "node-hue-api": "3.4.1",
     "tslib": "1.10.0"
   }
 }
