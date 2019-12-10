@@ -3636,10 +3636,10 @@ normalize-scroll-left@^0.2.0:
   resolved "https://registry.yarnpkg.com/normalize-scroll-left/-/normalize-scroll-left-0.2.0.tgz#9445d74275f303cc661e113329aefa492f58114c"
   integrity sha512-t5oCENZJl8TGusJKoCJm7+asaSsPuNmK6+iEjrZ5TyBj2f02brCRsd4c83hwtu+e5d4LCSBZ0uoDlMjBo+A8yA==
 
-now@16.6.1:
-  version "16.6.1"
-  resolved "https://registry.yarnpkg.com/now/-/now-16.6.1.tgz#5ec795f82f00bc9a3986de200714924241ed5eea"
-  integrity sha512-uddAO2OiScmIXVUrMc2Zr7RiP4ommugyzukqt2rIEg+qZKmPRHlJRX++Yj18TQLXtEfvqkUGzqK+a+CrogHZmg==
+now@16.6.3:
+  version "16.6.3"
+  resolved "https://registry.yarnpkg.com/now/-/now-16.6.3.tgz#00a940223bcac7de0a0d892ad07b9dbdf44cf5e8"
+  integrity sha512-bNAaQUL+ggTfpzsO6WxqCvEAz8sbm/2mI2OxJIsVq+v4cRPpH09z8+4EQeP6cfWll2ospH1UFxW2wF+9EaEFKA==
 
 npm-bundled@^1.0.1:
   version "1.0.6"
