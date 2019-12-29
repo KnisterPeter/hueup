@@ -40,7 +40,7 @@
     "@now/node": "^1.0.0",
     "mobx": "^5.13.0",
     "mobx-react-lite": "^1.4.1",
-    "node-hue-api": "^3.1.1",
+    "node-hue-api": "^4.0.0",
     "preact": "next",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
