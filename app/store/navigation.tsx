@@ -1,9 +1,8 @@
-import { computed, observable } from "mobx";
-import { FC } from "react";
-import { Bridge } from "./bridge";
+import { closeDrawer } from "../ui/drawer";
+import { useTitle } from "./title";
 import { createStore } from "./_helper";
 
-export enum Routes {
+export enum Route {
   "/" = "/",
   "/authorize" = "/authorize",
   "/authorized" = "/authorized",
@@ -13,39 +12,15 @@ export enum Routes {
   "/config" = "/config"
 }
 
-export class NavigationStore {
-  @observable
-  private _path = window.location.pathname;
+export const { Provider: PathProvider, useStore: usePath } = createStore(
+  window.location.pathname
+);
 
-  @computed
-  public get path(): string {
-    return this._path;
-  }
+export function navigateTo(route: Route): void {
+  const [title] = useTitle();
+  const [, updatePath] = usePath();
 
-  public set to(route: Routes) {
-    window.history.pushState({}, this.title || "Hue up", Routes[route]);
-    this._path = Routes[route];
-    this.drawerOpen = false;
-  }
-
-  @observable
-  public drawerOpen = false;
-
-  @observable
-  public view?: FC<{ bridge: Bridge }>;
-
-  @observable
-  private _title = "Hue up";
-
-  @computed
-  public get title(): string | undefined {
-    return this._title;
-  }
-
-  public set title(title: string | undefined) {
-    this._title = title || "Hue up";
-  }
+  window.history.pushState({}, title, Route[route]);
+  updatePath(() => Route[route]);
+  closeDrawer();
 }
-
-const { Provider, use } = createStore(() => new NavigationStore());
-export { Provider as NavigationProvider, use as useNavigation };

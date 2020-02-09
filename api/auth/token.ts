@@ -10,6 +10,11 @@ export default handleError(async (req, res) => {
   const api = await fromAuthorizationCode(appId, code);
 
   const credentials = api.remote.getRemoteAccessCredentials();
+  if (!credentials.tokens.access || !credentials.tokens.refresh) {
+    res.status(500);
+    res.json({ error: "tokens from api are missing" });
+    return;
+  }
 
   res.status(200);
   setCookies(

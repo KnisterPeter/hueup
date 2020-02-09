@@ -1,5 +1,6 @@
 import {
   AppBar,
+  CircularProgress,
   CssBaseline,
   IconButton,
   Toolbar,
@@ -7,10 +8,11 @@ import {
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import { useObserver } from "mobx-react-lite";
-import React, { FC, lazy, Suspense, useCallback } from "react";
-import { Routes, useNavigation } from "../store/navigation";
+import React, { FC, lazy, Suspense } from "react";
+import { Route as R, usePath } from "../store/navigation";
+import { useTitle } from "../store/title";
 import BridgeSelection from "../view/bridge-selection";
-import { Drawer } from "./drawer";
+import { Drawer, toggleDrawer } from "./drawer";
 import { Update } from "./update";
 
 const LazyAuthorize = lazy(() => import("../view/authorize"));
@@ -21,13 +23,9 @@ const LazyLights = lazy(() => import("../view/lights"));
 const LazyConfig = lazy(() => import("../view/config"));
 
 export function App() {
-  const navigation = useNavigation();
+  const [title] = useTitle();
 
-  const toggleDrawer = useCallback(() => {
-    navigation.drawerOpen = !navigation.drawerOpen;
-  }, [navigation]);
-
-  return useObserver(() => (
+  return (
     <>
       <CssBaseline />
       <AppBar position="static">
@@ -35,29 +33,29 @@ export function App() {
           <IconButton edge="start" color="inherit" onClick={toggleDrawer}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6">{navigation.title}</Typography>
+          <Typography variant="h6">{title}</Typography>
         </Toolbar>
       </AppBar>
       <Drawer />
-      <Route path={Routes["/"]} view={BridgeSelection} />
-      <Route path={Routes["/authorize"]} view={LazyAuthorize} />
-      <Route path={Routes["/authorized"]} view={LazyAuthorized} />
-      <Route path={Routes["/overview"]} view={LazyOverview} />
-      <Route path={Routes["/groups"]} view={LazyGroups} />
-      <Route path={Routes["/lights"]} view={LazyLights} />
-      <Route path={Routes["/config"]} view={LazyConfig} />
+      <Route path={R["/"]} view={BridgeSelection} />
+      <Route path={R["/authorize"]} view={LazyAuthorize} />
+      <Route path={R["/authorized"]} view={LazyAuthorized} />
+      <Route path={R["/overview"]} view={LazyOverview} />
+      <Route path={R["/groups"]} view={LazyGroups} />
+      <Route path={R["/lights"]} view={LazyLights} />
+      <Route path={R["/config"]} view={LazyConfig} />
       <Update />
     </>
-  ));
+  );
 }
 
 function Route({ path, view }: { path: string; view: FC }) {
-  const navigation = useNavigation();
+  const [currentPath] = usePath();
   const View = view;
 
   return useObserver(() =>
-    path === navigation.path ? (
-      <Suspense fallback={<div>loading...</div>}>
+    path === currentPath ? (
+      <Suspense fallback={<CircularProgress />}>
         <View />
       </Suspense>
     ) : null

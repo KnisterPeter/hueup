@@ -2,9 +2,18 @@ import { computed, observable } from "mobx";
 import { objectToUrl, urlToObject } from "../../common/url";
 import { Groups, groupsFromApi } from "./groups";
 import { Lights, lightsFromApi } from "./lights";
-import { NavigationStore, Routes } from "./navigation";
+import { navigateTo, Route } from "./navigation";
+import { createStore } from "./_helper";
 
 const appId = window.location.host !== "localhost:1234" ? "hueup" : "hueup-dev";
+
+function randomChars(n: number): string {
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  return (
+    chars[Math.floor(Math.random() * chars.length)] +
+    (n > 0 ? randomChars(n - 1) : "")
+  );
+}
 
 export interface BridgeConfig {
   name: string;
@@ -19,53 +28,25 @@ export interface BridgeConfig {
 
 export class Bridge {
   @observable
-  private data: Bridge;
-
-  @computed
-  public get id(): string {
-    return this.data.id;
-  }
-
-  @computed
-  public get internalipaddress(): string {
-    return this.data.internalipaddress;
-  }
+  private _username: string | undefined;
 
   @computed
   public get username(): string | undefined {
-    return this.data.username;
+    return this._username;
   }
 
-  public set username(username: string | undefined) {
-    this.data.username = username;
-  }
-
-  @computed
-  public get csrfToken(): string | undefined {
-    return this.data.csrfToken;
-  }
-
-  public set csrfToken(csrfToken: string | undefined) {
-    this.data.csrfToken = csrfToken;
-  }
-
-  constructor(data: Bridge, private navigation: NavigationStore) {
-    this.data = data;
+  constructor() {
+    this._username = window.localStorage.getItem("username") || undefined;
   }
 
   public async startAuth(): Promise<void> {
-    this.csrfToken = (function char(n: number): string {
-      const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-      return (
-        chars[Math.floor(Math.random() * chars.length)] +
-        (n > 0 ? char(n - 1) : "")
-      );
-    })(32);
+    const csrfToken = randomChars(32);
+    window.localStorage.setItem("csrf-token", csrfToken);
 
     const urlResponse = await fetch(
       `/api/auth/url?${objectToUrl({
         appid: appId,
-        state: this.csrfToken
+        state: csrfToken
       })}`
     );
     const urlData: { url: string } = await urlResponse.json();
@@ -76,17 +57,19 @@ export class Bridge {
   public async continueAuth(): Promise<void> {
     const params = urlToObject(window.location.search);
     if (!params.code) {
-      this.navigation.to = Routes["/authorize"];
+      navigateTo(Route["/authorize"]);
       return;
     }
 
-    if (params.state !== this.csrfToken) {
+    const csrfToken = window.localStorage.getItem("csrf-token") || undefined;
+
+    if (params.state !== csrfToken) {
       console.warn("Invalid csrf token detected");
-      this.csrfToken = undefined;
-      this.navigation.to = Routes["/"];
+      window.localStorage.removeItem("csrf-token");
+      navigateTo(Route["/"]);
       return;
     }
-    this.csrfToken = undefined;
+    window.localStorage.removeItem("csrf-token");
 
     const code = params.code;
 
@@ -98,24 +81,29 @@ export class Bridge {
     );
 
     if (tokenResponse.status !== 200) {
-      this.navigation.to = Routes["/authorize"];
+      navigateTo(Route["/authorize"]);
       return;
     }
 
     const data: { username: string } = await tokenResponse.json();
-    this.username = data.username;
+    this._username = data.username;
+    window.localStorage.setItem("username", data.username);
 
-    this.navigation.to = Routes["/overview"];
+    navigateTo(Route["/overview"]);
   }
 
   public async loadConfig(): Promise<BridgeConfig> {
-    const response = await fetch(
-      `http://${this.internalipaddress}/api/${this.username}/config`,
-      {
-        mode: "cors"
-      }
-    );
-    return await response.json();
+    return {
+      name: "remote",
+      whitelist: {}
+    };
+    // const response = await fetch(
+    //   `http://${this.internalipaddress}/api/${this.username}/config`,
+    //   {
+    //     mode: "cors"
+    //   }
+    // );
+    // return await response.json();
   }
 
   public async deleteUser(): Promise<void> {
@@ -140,23 +128,43 @@ export class Bridge {
     );
     return await response.json();
   }
+}
 
-  public async loadGroups(): Promise<Groups> {
-    const response = await fetch(`/api/groups/list?username=${this.username}`);
-    return groupsFromApi(await response.json());
-  }
+export const { Provider: BridgeProvider, useStore: useBridge } = createStore(
+  new Bridge()
+);
 
-  public async setGroupState(
-    id: string,
-    state: { on: boolean }
-  ): Promise<void> {
-    const response = await fetch(
-      `/api/groups/action?username=${this.username}&id=${id}`,
-      {
-        method: "PUT",
-        body: JSON.stringify(state)
-      }
-    );
-    return await response.json();
-  }
+export const { Provider: GroupsProvider, useStore: useGroups } = createStore<
+  Groups | undefined
+>(undefined);
+
+export async function fetchGroups(username: string): Promise<Groups> {
+  const response = await fetch(`/api/groups/list?username=${username}`);
+  const data = await response.json();
+  return groupsFromApi(data);
+}
+
+export async function updateGroupState(
+  username: string,
+  id: string,
+  state: { on: boolean }
+): Promise<void> {
+  const response = await fetch(
+    `/api/groups/action?username=${username}&id=${id}`,
+    {
+      method: "PUT",
+      body: JSON.stringify(state)
+    }
+  );
+  await response.json();
+}
+
+export const { Provider: LightsProvider, useStore: useLights } = createStore<
+  Lights | undefined
+>(undefined);
+
+export async function fetchLights(username: string): Promise<Lights> {
+  const response = await fetch(`/api/lights/list?username=${username}`);
+  const data = await response.json();
+  return lightsFromApi(data);
 }

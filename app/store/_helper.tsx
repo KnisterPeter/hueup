@@ -1,24 +1,38 @@
-import { useLocalStore } from "mobx-react-lite";
-import React, { createContext, FC, PropsWithChildren, useContext } from "react";
+import { produce } from "immer";
+import React, {
+  createContext,
+  Dispatch,
+  FC,
+  PropsWithChildren,
+  useContext,
+  useReducer
+} from "react";
 
-export function createStore<T, D extends object>(
-  factory: (dependencies: D) => T,
-  dependenciesFactory?: () => D
-): { Provider: FC<PropsWithChildren<unknown>>; use: () => T } {
-  const Context = createContext<T>(undefined!);
+export function createStore<T>(
+  initialState: T
+): {
+  Provider: React.FC<{
+    children?: React.ReactNode;
+  }>;
+  useStore: () => readonly [T, React.Dispatch<(draft: T) => void>];
+} {
+  const stateContext = createContext(initialState);
+  const updateContext = createContext<Dispatch<(draft: T) => void>>(undefined!);
 
-  const Provider: FC<PropsWithChildren<unknown>> = ({ children }) => {
-    const dependencies = dependenciesFactory
-      ? dependenciesFactory()
-      : undefined;
-    const store = useLocalStore(factory, dependencies);
-    return <Context.Provider value={store}>{children}</Context.Provider>;
+  const StoreProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
+    const [state, updateState] = useReducer(
+      produce as (state: T, action: (draft: T) => void) => T,
+      initialState
+    );
+    return (
+      <updateContext.Provider value={updateState}>
+        <stateContext.Provider value={state}>{children}</stateContext.Provider>
+      </updateContext.Provider>
+    );
   };
 
-  const use = () => useContext(Context);
+  const useStore = () =>
+    [useContext(stateContext), useContext(updateContext)] as const;
 
-  return {
-    Provider,
-    use
-  };
+  return { Provider: StoreProvider, useStore };
 }

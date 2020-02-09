@@ -1,10 +1,5 @@
+import { v3 } from "node-hue-api";
 import { Alert, Colormode, Effect } from "./common-types";
-import {
-  hasBooleanAttribute,
-  hasNumberAttribute,
-  hasObjectAttribute,
-  hasStringAttribute
-} from "./_typeguards";
 
 export interface Light {
   state: {
@@ -50,78 +45,20 @@ export interface Light {
 }
 
 export interface Lights {
-  [id: string]: Light;
+  // todo
+  [id: string]: any;
 }
 
 export function lightsFromApi(raw: unknown): Lights {
   if (!Array.isArray(raw)) {
     throw new Error("Expect an array from the api");
   }
-  return raw.reduce(
-    (accu, rawLight: unknown) => {
-      if (hasNumberAttribute(rawLight, "_id")) {
-        console.log("lights", rawLight);
-        accu[rawLight._id] = {
-          get name(): string {
-            if (
-              hasObjectAttribute(rawLight, "_rawData") &&
-              hasStringAttribute(rawLight._rawData, "name")
-            ) {
-              return rawLight._rawData.name;
-            }
-            throw new Error(`No valid attribute 'name' found`);
-          },
-          get state(): Light["state"] {
-            if (hasObjectAttribute(rawLight, "_rawData")) {
-              return {
-                get on(): boolean {
-                  if (
-                    hasObjectAttribute(rawLight, "_rawData") &&
-                    hasObjectAttribute(rawLight._rawData, "state") &&
-                    hasBooleanAttribute(rawLight._rawData.state, "on")
-                  ) {
-                    return rawLight._rawData.state.on;
-                  }
-                  throw new Error(`No valid attribute 'on' found`);
-                },
-                get bri(): number {
-                  throw new Error("Unimplemented");
-                },
-                get hue(): number {
-                  throw new Error("Unimplemented");
-                },
-                get sat(): number {
-                  throw new Error("Unimplemented");
-                },
-                get effect(): Effect {
-                  throw new Error("Unimplemented");
-                },
-                get xy(): [number, number] {
-                  throw new Error("Unimplemented");
-                },
-                get ct(): number {
-                  throw new Error("Unimplemented");
-                },
-                get alert(): Alert {
-                  throw new Error("Unimplemented");
-                },
-                get colormode(): Colormode {
-                  throw new Error("Unimplemented");
-                },
-                get mode(): "homeautomation" {
-                  throw new Error("Unimplemented");
-                },
-                get reachable(): boolean {
-                  throw new Error("Unimplemented");
-                }
-              };
-            }
-            throw new Error(`No valid attribute 'state' found`);
-          }
-        };
-      }
-      return accu;
-    },
-    {} as Lights
-  );
+
+  const data = raw.map(entry => v3.model.createFromJson(entry));
+
+  return data.reduce((o, g) => {
+    // todo
+    o[g.id] = g as any;
+    return o;
+  }, {} as Lights);
 }

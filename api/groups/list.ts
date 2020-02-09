@@ -4,5 +4,5 @@ export default fn(async (_, res, api) => {
   const groups = await api.groups.getAll();
 
   res.status(200);
-  res.json(groups);
+  res.json(groups.map(group => group.getJsonPayload()));
 });

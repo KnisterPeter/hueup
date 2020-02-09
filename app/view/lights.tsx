@@ -1,4 +1,5 @@
 import {
+  CircularProgress,
   List,
   ListItem,
   ListItemIcon,
@@ -8,56 +9,66 @@ import {
 } from "@material-ui/core";
 import WbIncandescentRoundedIcon from "@material-ui/icons/WbIncandescentRounded";
 import { useObserver } from "mobx-react-lite";
-import React, { useCallback } from "react";
-import { useBridgeFunction } from "../hooks/bridge-function";
-import { useTitle } from "../hooks/title";
-import { Bridge } from "../store/bridge";
-import { useSelectedBridge } from "../store/bridges";
+import React, { useCallback, useEffect } from "react";
+import {
+  fetchLights,
+  LightsProvider,
+  useBridge,
+  useLights
+} from "../store/bridge";
 import { Light } from "../store/lights";
+import { navigateTo, Route } from "../store/navigation";
+import { setTitle } from "../store/title";
 
 export default function View() {
-  useTitle("Lights");
+  setTitle("Lights");
 
-  const bridge = useSelectedBridge();
-  if (!bridge) {
+  const [bridge] = useBridge();
+  if (!bridge.username) {
+    navigateTo(Route["/"]);
     return null;
   }
 
-  const [store, refresh] = useBridgeFunction(bridge, bridge.loadLights);
-
-  return useObserver(() =>
-    store.loading ? (
-      <div>loading...</div>
-    ) : (
-      <List>
-        {Object.keys(store.value).map(id => (
-          <LightView
-            key={id}
-            bridge={bridge}
-            id={id}
-            light={store.value[id]}
-            refresh={refresh}
-          />
-        ))}
-      </List>
-    )
+  return (
+    <LightsProvider>
+      <LightsView />
+    </LightsProvider>
   );
 }
 
-function LightView({
-  bridge,
-  id,
-  light,
-  refresh
-}: {
-  bridge: Bridge;
-  id: string;
-  light: Light;
-  refresh: () => void;
-}) {
-  const onClick = useCallback(() => {
-    bridge.setLightState(id, { on: !light.state.on }).then(refresh);
-  }, [bridge, id, light, refresh]);
+const LightsView = () => {
+  const [bridge] = useBridge();
+  const [lights, updateLights] = useLights();
+
+  useEffect(() => {
+    if (bridge.username) {
+      fetchLights(bridge.username).then(lights => {
+        updateLights(() => lights);
+      });
+    }
+  }, []);
+
+  return !lights ? (
+    <CircularProgress />
+  ) : (
+    <List>
+      {Object.keys(lights).map(id => (
+        <LightView key={id} id={id} light={lights[id]} />
+      ))}
+    </List>
+  );
+};
+
+function LightView({ id, light }: { id: string; light: Light }) {
+  const [bridge] = useBridge();
+  const [, updateLights] = useLights();
+
+  const onClick = useCallback(async () => {
+    if (bridge.username) {
+      const lights = await fetchLights(bridge.username);
+      updateLights(() => lights);
+    }
+  }, [bridge, id, light]);
 
   return useObserver(() => (
     <ListItem>

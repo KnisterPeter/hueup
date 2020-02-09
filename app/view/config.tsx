@@ -1,15 +1,16 @@
 import { useObserver } from "mobx-react-lite";
 import React, { useCallback } from "react";
 import { useBridgeFunction } from "../hooks/bridge-function";
-import { useTitle } from "../hooks/title";
-import { Bridge, BridgeConfig } from "../store/bridge";
-import { useSelectedBridge } from "../store/bridges";
+import { BridgeConfig, useBridge } from "../store/bridge";
+import { navigateTo, Route } from "../store/navigation";
+import { setTitle } from "../store/title";
 
 export default function View() {
-  useTitle("Users");
+  setTitle("Users");
 
-  const bridge = useSelectedBridge();
-  if (!bridge) {
+  const [bridge] = useBridge();
+  if (!bridge.username) {
+    navigateTo(Route["/"]);
     return null;
   }
 
@@ -25,7 +26,6 @@ export default function View() {
           {Object.keys(store.value.whitelist).map(username => (
             <User
               key={username}
-              bridge={bridge}
               username={username}
               user={store.value!.whitelist[username]}
             />
@@ -37,14 +37,14 @@ export default function View() {
 }
 
 function User({
-  bridge,
   username,
   user
 }: {
-  bridge: Bridge;
   username: string;
   user: BridgeConfig["whitelist"][0];
 }) {
+  const [bridge] = useBridge();
+
   const onClick = useCallback(() => bridge.deleteUser(), [bridge]);
 
   return useObserver(() => (

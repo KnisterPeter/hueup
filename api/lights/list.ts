@@ -4,5 +4,5 @@ export default fn(async (_, res, api) => {
   const lights = await api.lights.getAll();
 
   res.status(200);
-  res.json(lights);
+  res.json(lights.map(light => light.getJsonPayload()));
 });

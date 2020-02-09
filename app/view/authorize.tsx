@@ -7,26 +7,19 @@ import {
 } from "@material-ui/core";
 import { useObserver } from "mobx-react-lite";
 import React, { useCallback, useState } from "react";
-import { useTitle } from "../hooks/title";
-import { useBridges } from "../store/bridges";
-import { Routes, useNavigation } from "../store/navigation";
+import { useBridge } from "../store/bridge";
+import { navigateTo, Route } from "../store/navigation";
+import { setTitle } from "../store/title";
 
 export default function Authorize() {
-  useTitle("Authorize bridge");
+  setTitle("Authorize bridge");
 
   const [busy, setBusy] = useState(false);
 
-  const bridges = useBridges();
-  const navigation = useNavigation();
-
-  // if (!bridges.selected) {
-  //   navigation.to = Routes["/"];
-  //   return null;
-  // }
-  const bridge = bridges.selected;
+  const [bridge] = useBridge();
 
   if (bridge && bridge.username) {
-    navigation.to = Routes["/overview"];
+    navigateTo(Route["/overview"]);
     return null;
   }
 
@@ -34,11 +27,6 @@ export default function Authorize() {
     setBusy(true);
     bridge.startAuth();
   }, [bridge, setBusy]);
-
-  const onCancel = useCallback(() => {
-    bridges.select(undefined);
-    navigation.to = Routes["/"];
-  }, [bridges, navigation]);
 
   const spacing = 4;
 
@@ -65,13 +53,6 @@ export default function Authorize() {
         >
           Authorize
         </Button>
-        {!busy && (
-          <Grid item xs={8}>
-            <Button variant="contained" color="secondary" onClick={onCancel}>
-              Cancel
-            </Button>
-          </Grid>
-        )}
         {busy && <CircularProgress />}
       </Grid>
     </Box>

@@ -9,54 +9,55 @@ import AddIcon from "@material-ui/icons/Add";
 import { useObserver } from "mobx-react-lite";
 import React, { useCallback } from "react";
 import logo from "../logo.png";
-import { useBridges } from "../store/bridges";
-import { Routes as R, Routes, useNavigation } from "../store/navigation";
+import { useBridge } from "../store/bridge";
+import { navigateTo, Route } from "../store/navigation";
+import { createStore } from "../store/_helper";
+
+export const { Provider: DrawerProvider, useStore: useDrawer } = createStore({
+  open: false
+});
+
+export function openDrawer(): void {
+  const [, updateDrawer] = useDrawer();
+  updateDrawer(draft => {
+    draft.open = true;
+  });
+}
+
+export function closeDrawer(): void {
+  const [, updateDrawer] = useDrawer();
+  updateDrawer(draft => {
+    draft.open = false;
+  });
+}
+
+export function toggleDrawer(): void {
+  const [, updateDrawer] = useDrawer();
+  updateDrawer(draft => {
+    draft.open = !draft.open;
+  });
+}
 
 export function Drawer() {
-  const bridges = useBridges();
-  const navigation = useNavigation();
+  const [drawer] = useDrawer();
+  const [bridge] = useBridge();
 
-  const onChangeBridge = useCallback(() => {
-    bridges.select(undefined);
-    navigation.drawerOpen = false;
-    navigation.to = Routes["/"];
-  }, [bridges, navigation]);
-
-  const onShowGroups = useCallback(() => (navigation.to = R["/groups"]), [
-    navigation
-  ]);
-  const onShowLigths = useCallback(() => (navigation.to = R["/lights"]), [
-    navigation
-  ]);
-  const onShowConfig = useCallback(() => (navigation.to = R["/config"]), [
-    navigation
-  ]);
-
-  const openDrawer = useCallback(() => (navigation.drawerOpen = true), [
-    navigation
-  ]);
-  const closeDrawer = useCallback(() => (navigation.drawerOpen = false), [
-    navigation
-  ]);
+  const onShowGroups = useCallback(() => navigateTo(Route["/groups"]), []);
+  const onShowLigths = useCallback(() => navigateTo(Route["/lights"]), []);
+  const onShowConfig = useCallback(() => navigateTo(Route["/config"]), []);
 
   return useObserver(() => (
     <SwipeableDrawer
       anchor="left"
-      open={navigation.drawerOpen}
+      open={drawer.open}
       onOpen={openDrawer}
       onClose={closeDrawer}
     >
       <div style={{ minWidth: "200px" }}>
         <img src={logo} style={{ margin: 10, width: 180, height: 180 }} />
         <List>
-          {bridges.authenticated && (
+          {bridge.username && (
             <>
-              <ListItem button onClick={onChangeBridge}>
-                <ListItemIcon>
-                  <AddIcon />
-                </ListItemIcon>
-                <ListItemText primary="Change Bridge" />
-              </ListItem>
               <ListItem button onClick={onShowGroups}>
                 <ListItemIcon>
                   <AddIcon />

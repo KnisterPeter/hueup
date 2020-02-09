@@ -1,25 +1,17 @@
-import { useObserver } from "mobx-react-lite";
 import { useEffect } from "react";
-import { useBridges } from "../store/bridges";
-import { Routes, useNavigation } from "../store/navigation";
+import { useBridge } from "../store/bridge";
+import { navigateTo, Route } from "../store/navigation";
 
 export default function Overview() {
-  const navigation = useNavigation();
-  const bridges = useBridges();
+  const [bridge] = useBridge();
 
   useEffect(() => {
-    if (bridges.selected) {
-      const bridge = bridges.selected;
-
-      if (bridge.username) {
-        navigation.to = Routes["/groups"];
-      } else {
-        navigation.to = Routes["/authorize"];
-      }
+    if (bridge.username) {
+      navigateTo(Route["/groups"]);
     } else {
-      navigation.to = Routes["/"];
+      navigateTo(Route["/authorize"]);
     }
-  }, [bridges, navigation]);
+  }, [bridge]);
 
-  return useObserver(() => null);
+  return null;
 }

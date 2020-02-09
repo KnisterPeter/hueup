@@ -2,15 +2,21 @@ import React from "react";
 import * as ReactDOM from "react-dom";
 import "typeface-roboto";
 import "./pwa";
-import { BridgesProvider } from "./store/bridges";
-import { NavigationProvider } from "./store/navigation";
+import { BridgeProvider } from "./store/bridge";
+import { PathProvider } from "./store/navigation";
+import { TitleProvider } from "./store/title";
 import { App } from "./ui/app";
+import { DrawerProvider } from "./ui/drawer";
 
 ReactDOM.render(
-  <NavigationProvider>
-    <BridgesProvider>
-      <App />
-    </BridgesProvider>
-  </NavigationProvider>,
+  <DrawerProvider>
+    <TitleProvider>
+      <PathProvider>
+        <BridgeProvider>
+          <App />
+        </BridgeProvider>
+      </PathProvider>
+    </TitleProvider>
+  </DrawerProvider>,
   document.getElementById("app")
 );

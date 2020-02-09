@@ -42,6 +42,10 @@ const config = {
         use: ["style-loader", "css-loader"]
       },
       {
+        test: require.resolve("node-hue-api/lib/api/discovery/index"),
+        use: "null-loader"
+      },
+      {
         test: /\.tsx?$/,
         use: "ts-loader",
         exclude: /node_modules/
