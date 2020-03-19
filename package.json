@@ -44,8 +44,8 @@
     "mobx-react-lite": "1.5.2",
     "node-hue-api": "4.0.1",
     "preact": "10.3.4",
-    "react": "16.13.0",
-    "react-dom": "16.13.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "tslib": "1.11.1",
     "typeface-roboto": "0.0.75"
   },
