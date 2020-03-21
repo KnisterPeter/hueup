@@ -54,13 +54,21 @@
   ],
   "prettier": {},
   "renovate": {
-    "extends": [
-      "config:base"
-    ],
     "lockFileMaintenance": {
-      "enabled": true
+      "enabled": true,
+      "automerge": true
     },
     "packageRules": [
+      {
+        "depTypeList": [
+          "devDependencies"
+        ],
+        "updateTypes": [
+          "minor",
+          "patch"
+        ],
+        "automerge": true
+      },
       {
         "packagePatterns": [
           "^@types/"
