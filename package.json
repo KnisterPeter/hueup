@@ -42,7 +42,7 @@
     "immer": "6.0.2",
     "mobx": "5.15.4",
     "mobx-react-lite": "1.5.2",
-    "node-hue-api": "4.0.1",
+    "node-hue-api": "4.0.5",
     "preact": "10.3.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
