@@ -20,7 +20,7 @@ export const useBridgeFunction = <T>(
   bridge: Bridge,
   fn: () => Promise<T>
 ): [BridgeFunctionStore<T>, () => void] => {
-  const [state, setState] = useState();
+  const [state, setState] = useState<{} | undefined>();
 
   const refresh = () => {
     setState({});
