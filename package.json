@@ -16,7 +16,7 @@
     "now-build": "NODE_ENV=production webpack -p"
   },
   "devDependencies": {
-    "@types/react": "16.9.32",
+    "@types/react": "16.9.33",
     "@types/react-dom": "16.9.6",
     "css-loader": "3.5.1",
     "file-loader": "6.0.0",
