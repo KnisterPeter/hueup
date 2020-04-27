@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@types/react": "16.9.34",
-    "@types/react-dom": "16.9.6",
+    "@types/react-dom": "16.9.7",
     "css-loader": "3.5.3",
     "file-loader": "6.0.0",
     "html-webpack-plugin": "4.2.0",
