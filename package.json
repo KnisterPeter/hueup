@@ -20,7 +20,7 @@
     "@types/react-dom": "16.9.7",
     "css-loader": "3.5.3",
     "file-loader": "6.0.0",
-    "html-webpack-plugin": "4.2.0",
+    "html-webpack-plugin": "4.2.1",
     "now": "18.0.0",
     "null-loader": "4.0.0",
     "prettier": "2.0.5",
