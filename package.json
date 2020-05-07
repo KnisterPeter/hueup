@@ -21,7 +21,7 @@
     "css-loader": "3.5.3",
     "file-loader": "6.0.0",
     "html-webpack-plugin": "4.3.0",
-    "now": "18.0.0",
+    "now": "19.0.0",
     "null-loader": "4.0.0",
     "prettier": "2.0.5",
     "rimraf": "3.0.2",
