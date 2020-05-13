@@ -46,7 +46,7 @@
     "preact": "10.4.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "tslib": "1.12.0",
+    "tslib": "2.0.0",
     "typeface-roboto": "0.0.75"
   },
   "browserslist": [
