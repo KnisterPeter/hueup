@@ -39,7 +39,7 @@
     "@material-ui/core": "4.9.14",
     "@material-ui/icons": "4.9.1",
     "@now/node": "1.6.1",
-    "immer": "6.0.5",
+    "immer": "6.0.6",
     "mobx": "5.15.4",
     "mobx-react-lite": "2.0.7",
     "node-hue-api": "4.0.6",
