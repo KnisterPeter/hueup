@@ -9,7 +9,7 @@
     "now-build": ""
   },
   "devDependencies": {
-    "typescript": "3.9.3"
+    "typescript": "3.9.5"
   },
   "dependencies": {
     "@now/node": "1.6.1",
