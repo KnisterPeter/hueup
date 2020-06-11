@@ -4566,10 +4566,10 @@ node-forge@0.9.0:
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.9.0.tgz#d624050edbb44874adca12bb9a52ec63cb782579"
   integrity sha512-7ASaDa3pD+lJ3WvXFsxekJQelBKRpne+GOVbLbtHYdd7pFspyeuJHnWfLplGf3SwKGbfs/aYl5V/JCIaHVUKKQ==
 
-node-hue-api@4.0.6:
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/node-hue-api/-/node-hue-api-4.0.6.tgz#ddd79b776c647f3a1ded7268048958bdf3e89e82"
-  integrity sha512-HoBy97r+btnZdGYpBVkag/IuQBbTq+vwW0K3Ni8tG/5/nW3Gvz9z1zE0Rg3DoEkVnmXOWPcvKSYI/b/UTJcdEg==
+node-hue-api@4.0.7:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/node-hue-api/-/node-hue-api-4.0.7.tgz#ad8def2339cce9822352d4b89fae37b7d1fbd598"
+  integrity sha512-XAAFd/GsMgM8dybk/XoZ6LMhGvMGLxtFPL8S2Dw4H0vvOMb/93UtLHTkUN6OVPzycA6KcsYrfv9tO03pWNLJCQ==
   dependencies:
     axios "^0.19.0"
     bottleneck "^2.19.5"
