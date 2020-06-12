@@ -1149,12 +1149,14 @@
     prop-types "^15.7.2"
     react-is "^16.8.0"
 
-"@now/node@1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@now/node/-/node-1.6.1.tgz#d478bfbc98af05d3eae7b5b01b26d1a1c638819b"
-  integrity sha512-EdSdOS4HSJRexibxIbrKCLZZ1sc0+oaD0P7kvhf26CbXSNlrZP0Iycpb+fbO4Qc2EcmGR2am90DhoX548B5a7g==
+"@now/node@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@now/node/-/node-1.7.0.tgz#a73baeab27dfde37192e881f3342fb20d6082b6d"
+  integrity sha512-MngeJ7/6Q1LwMRCJbaGnezMB/ituZWaaEPTjsk+C8sdkrbey1+fEEidYuUAL+2+kTUj3T7GZcRjqMoOVOA9SDw==
   dependencies:
     "@types/node" "*"
+    ts-node "8.9.1"
+    typescript "3.9.3"
 
 "@rollup/plugin-node-resolve@^7.1.1":
   version "7.1.3"
