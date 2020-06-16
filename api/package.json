@@ -12,7 +12,7 @@
     "typescript": "3.9.5"
   },
   "dependencies": {
-    "@now/node": "1.7.0",
+    "@now/node": "1.7.1",
     "node-hue-api": "4.0.7",
     "tslib": "2.0.0"
   }
